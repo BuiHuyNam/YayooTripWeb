@@ -1,0 +1,31 @@
+<div class="container mx-auto px-4 py-6 space-y-6">
+  <!-- Composer -->
+  <div class="rounded-2xl border bg-background p-4 flex items-center gap-3">
+    <div class="flex -space-x-2">
+      <img
+            [src]="currentUser.avatarUrl || '/assets/images/avatar.jpg'"
+            alt="{{ currentUser.name || 'Bạn' }}"
+            class="h-9 w-9 rounded-full border object-cover"
+        
+        />
+    </div>
+    <button type="button"
+            class="flex-1 text-left px-4 py-3 rounded-xl border bg-white text-muted-foreground hover:bg-muted/50">
+      Chia sẻ trải nghiệm du lịch của bạn...
+    </button>
+  </div>
+
+  <!-- Feed -->
+<!-- composer của bạn đặt phía trên -->
+
+<!-- feed -->
+<div class="mt-6 space-y-6">
+  <app-post-card
+    *ngFor="let post of posts"
+    [post]="post"
+    (save)="onSave($event)"
+    (like)="onLike($event)">
+  </app-post-card>
+</div>
+
+</div>

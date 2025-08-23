@@ -1,0 +1,95 @@
+<div class="space-y-6">
+  <!-- Title + actions -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <p class="text-gray-500">Tổng quan hệ thống quản trị YayooTrip</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="inline-flex items-center gap-2 rounded-md bg-primary-600 px-3 py-2 text-white hover:bg-primary-700">
+        <i class="fa-solid fa-plus"></i>
+        <span>Tạo mới</span>
+      </button>
+      <button class="inline-flex items-center gap-2 rounded-md border px-3 py-2 hover:bg-gray-50">
+        <i class="fa-solid fa-arrow-rotate-right"></i>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-500">Người dùng</p>
+        <i class="fa-solid fa-users text-primary-600"></i>
+      </div>
+      <p class="mt-2 text-2xl font-bold">1,204</p>
+      <p class="text-xs text-gray-400">+3% so với tuần trước</p>
+    </div>
+
+    <div class="rounded-xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-500">Địa điểm</p>
+        <i class="fa-solid fa-map-location-dot text-primary-600"></i>
+      </div>
+      <p class="mt-2 text-2xl font-bold">358</p>
+      <p class="text-xs text-gray-400">+12 mới trong tuần</p>
+    </div>
+
+    <div class="rounded-xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-500">Đơn đặt</p>
+        <i class="fa-solid fa-ticket text-primary-600"></i>
+      </div>
+      <p class="mt-2 text-2xl font-bold">842</p>
+      <p class="text-xs text-gray-400">-1.2% so với tuần trước</p>
+    </div>
+
+    <div class="rounded-xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-500">Doanh thu</p>
+        <i class="fa-solid fa-coins text-primary-600"></i>
+      </div>
+      <p class="mt-2 text-2xl font-bold">₫128,5M</p>
+      <p class="text-xs text-gray-400">+8.4% MoM</p>
+    </div>
+  </div>
+
+  <!-- Sample table -->
+  <div class="rounded-xl border bg-white overflow-hidden">
+    <div class="px-4 py-3 border-b font-semibold">Hoạt động gần đây</div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600">
+          <tr>
+            <th class="px-4 py-2 text-left">Thời gian</th>
+            <th class="px-4 py-2 text-left">Sự kiện</th>
+            <th class="px-4 py-2 text-left">Người thực hiện</th>
+            <th class="px-4 py-2 text-left">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="px-4 py-2">10:21  •  Hôm nay</td>
+            <td class="px-4 py-2">Tạo địa điểm mới</td>
+            <td class="px-4 py-2">Nguyễn A</td>
+            <td class="px-4 py-2"><span class="rounded bg-primary-100 px-2 py-1 text-primary-700">Thành công</span></td>
+          </tr>
+          <tr class="border-t">
+            <td class="px-4 py-2">09:05  •  Hôm nay</td>
+            <td class="px-4 py-2">Cập nhật quyền role</td>
+            <td class="px-4 py-2">Trần B</td>
+            <td class="px-4 py-2"><span class="rounded bg-yellow-100 px-2 py-1 text-yellow-700">Chờ duyệt</span></td>
+          </tr>
+          <tr class="border-t">
+            <td class="px-4 py-2">Hôm qua</td>
+            <td class="px-4 py-2">Khóa người dùng</td>
+            <td class="px-4 py-2">Lê C</td>
+            <td class="px-4 py-2"><span class="rounded bg-red-100 px-2 py-1 text-red-700">Từ chối</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

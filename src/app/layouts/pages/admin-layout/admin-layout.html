@@ -1,0 +1,128 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Mobile sidebar -->
+  <div class="fixed inset-0 z-50 lg:hidden" [class.hidden]="!sidebarOpen">
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-75" (click)="closeSidebar()"></div>
+
+    <div class="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
+      <div class="flex h-16 items-center justify-between px-4 border-b">
+        <a routerLink="/admin" class="flex items-center gap-2 text-xl font-bold text-primary-600">
+          <i class="fa-solid fa-location-dot text-[20px]"></i>
+          YayooTrip Admin
+        </a>
+        <button class="p-2" (click)="closeSidebar()">
+          <i class="fa-solid fa-xmark text-[20px]"></i>
+        </button>
+      </div>
+
+      <nav class="flex-1 space-y-1 px-2 py-4">
+        <!-- Mobile/desktop nav items: dùng ngClass map theo item.icon -->
+        <a *ngFor="let item of navigation"
+           [routerLink]="item.href"
+           routerLinkActive="__active"
+           #rla="routerLinkActive"
+           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+           [ngClass]="rla.isActive ? 'bg-primary-100 text-primary-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+
+          <i class="fa-solid fa-fw mr-3 text-[18px]"
+             [ngClass]="{
+               'fa-gauge'           : item.icon === 'dashboard',
+               'fa-users'           : item.icon === 'users',
+               'fa-map-location-dot': item.icon === 'map',
+               'fa-shield'          : item.icon === 'shield',
+               'fa-sliders'         : item.icon === 'settings'
+             }"></i>
+
+          {{ item.name }}
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Desktop sidebar -->
+  <div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
+    <div class="flex flex-col flex-grow bg-white border-r border-gray-200">
+      <div class="flex h-16 items-center px-4 border-b">
+        <a routerLink="/admin" class="flex items-center gap-2 text-xl font-bold text-primary-600">
+          <i class="fa-solid fa-location-dot text-[20px]"></i>
+          YayooTrip Admin
+        </a>
+      </div>
+      <nav class="flex-1 space-y-1 px-2 py-4">
+        <a *ngFor="let item of navigation"
+           [routerLink]="item.href"
+           routerLinkActive="__active"
+           #rla2="routerLinkActive"
+           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+           [ngClass]="rla2.isActive ? 'bg-primary-100 text-primary-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+
+          <i class="fa-solid fa-fw mr-3 text-[18px]"
+             [ngClass]="{
+               'fa-gauge'           : item.icon === 'dashboard',
+               'fa-users'           : item.icon === 'users',
+               'fa-map-location-dot': item.icon === 'map',
+               'fa-shield'          : item.icon === 'shield',
+               'fa-sliders'         : item.icon === 'settings'
+             }"></i>
+
+          {{ item.name }}
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="lg:pl-64">
+    <!-- Top header -->
+    <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+      <button class="lg:hidden p-2" (click)="toggleSidebar()">
+        <i class="fa-solid fa-bars text-[20px]"></i>
+      </button>
+
+      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+        <div class="flex flex-1"></div>
+        <div class="flex items-center gap-x-4 lg:gap-x-6">
+          <button class="p-2">
+            <i class="fa-regular fa-bell text-[18px]"></i>
+          </button>
+
+          <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"></div>
+
+          <!-- User dropdown -->
+          <div class="relative">
+            <button class="h-8 w-8 rounded-full overflow-hidden border" (click)="toggleUserMenu()">
+              <img src="/admin-avatar.png" alt="avatar" class="h-full w-full object-cover" />
+            </button>
+
+            <div *ngIf="userMenuOpen" class="absolute right-0 mt-2 w-56 rounded-md border bg-white shadow-lg z-10">
+              <div class="px-3 py-2 border-b">
+                <p class="text-sm font-medium leading-none">Admin User</p>
+                <p class="text-xs text-gray-500">admin@yayootrip.com</p>
+              </div>
+              <button class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2">
+                <i class="fa-solid fa-user text-[16px]"></i>
+                <span>Hồ sơ</span>
+              </button>
+              <button class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2">
+                <i class="fa-solid fa-gear text-[16px]"></i>
+                <span>Cài đặt</span>
+              </button>
+              <div class="my-1 border-t"></div>
+              <button class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2" (click)="closeUserMenu()">
+                <i class="fa-solid fa-right-from-bracket text-[16px]"></i>
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <main class="py-6">
+      <div class="px-4 sm:px-6 lg:px-8">
+      
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>
