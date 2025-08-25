@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Post, PostCardComponent } from '../../components/post-card';
 
@@ -15,15 +15,33 @@ export class Social {
     avatarUrl: 'assets/images/avatar.jpg'
   };
 
-  openComposer() {
-    // TODO: mở modal hoặc điều hướng tới trang tạo bài viết
-  }
-
    composerAvatars = [
     '/assets/images/avatar.jpg',
     '/assets/images/avatar2.jpg',
     '/assets/images/avatar3.jpg',
   ];
+
+
+// Trạng thái dropdown & giá trị chọn
+isPrivacyOpen = false;
+selectedPrivacy: 'public' | 'friends' | 'private' = 'public';
+
+privacyLabel: Record<typeof this.selectedPrivacy, string> = {
+  public: 'Công khai',
+  friends: 'Bạn bè',
+  private: 'Riêng tư',
+};
+
+togglePrivacy() {
+  this.isPrivacyOpen = !this.isPrivacyOpen;
+}
+
+selectPrivacy(val: 'public' | 'friends' | 'private') {
+  this.selectedPrivacy = val;
+  this.isPrivacyOpen = false;
+}
+
+
 
   // Dữ liệu fix cứng 1 bài giống mock
   posts: Post[] = [
@@ -64,4 +82,15 @@ export class Social {
   onLike(event: any) {
     console.log('Like clicked:', event);
   }
+
+   isComposerOpen = false;
+
+  openComposer()  { this.isComposerOpen = true; }
+  closeComposer() { this.isComposerOpen = false; }
+
+ @HostListener('document:keydown.escape')
+onEsc() {
+  this.closeComposer();
+}
+
 }
