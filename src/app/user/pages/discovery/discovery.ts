@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LocationCardComponent, LocationItem } from '../../components/location-card';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LocationMapComponent } from '../../components/location-map';
 
 
 export type ViewMode = 'list' | 'map';
@@ -12,7 +13,7 @@ export interface PriceRange { id: string; name: string; min?: number; max?: numb
 @Component({
   selector: 'app-discovery',
   standalone: true, 
-  imports: [CommonModule, FormsModule, LocationCardComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, LocationMapComponent],
   templateUrl: './discovery.html',
   styleUrl: './discovery.css'
 })
@@ -71,7 +72,7 @@ locations = [{
 },
 
 {
-  id: 'h1',
+  id: 'h2',
   name: 'Sapa Luxury Hotel',
   categoryId: 'hotel',
   categoryName: 'Khách sạn',

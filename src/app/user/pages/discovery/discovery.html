@@ -84,12 +84,28 @@
   </div>
 </div>
 <!-- hoặc danh sách -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   <app-location-card
     *ngFor="let loc of locations"
     [location]="loc"
     (select)="onSelect(loc)">
   </app-location-card>
+</div> -->
+<!-- Danh sách -->
+  <div *ngIf="viewMode === 'list'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <app-location-card
+      *ngFor="let loc of locations"
+      [location]="loc"
+      (select)="onSelect(loc)">
+    </app-location-card>
+  </div>
+
+<!-- Bản đồ -->
+<div *ngIf="viewMode === 'map'" class="mt-6">
+ <app-location-map
+  [locations]="locations"
+  (locationSelected)="onSelect($event)">
+</app-location-map>
 </div>
 
 </section>
