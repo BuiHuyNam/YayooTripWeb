@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../auth.service';
+
 
 @Component({
   selector: 'app-login',
@@ -15,12 +17,19 @@ import { RouterLink } from '@angular/router';
 })
 export class Login {
 
-   showPassword = false;
+  showPassword = false;
+  isLoading = false;
+  errorMsg = '';
 
   formData = {
     email: '',
     password: '',
   };
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
@@ -29,7 +38,34 @@ export class Login {
   handleSubmit(event: Event) {
     event.preventDefault();
     // Handle login logic here
-    console.log('Login attempt:', this.formData);
+    if (!this.formData.email || !this.formData.password) {
+      this.errorMsg = 'Vui lòng nhập đầy đủ thông tin.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMsg = '';
+
+    this.authService.login(this.formData).subscribe({
+      next: (response) => {
+        console.log('Login successful:', response);
+        this.isLoading = false;
+        // Redirect to home page or dashboard after successful login
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        this.isLoading = false;
+
+        if (error.status === 401) {
+          this.errorMsg = 'Email hoặc mật khẩu không đúng.';
+        } else if (error.status === 0) {
+          this.errorMsg = 'Không thể kết nối đến server. Vui lòng thử lại sau.';
+        } else {
+          this.errorMsg = 'Đăng nhập thất bại. Vui lòng thử lại sau.';
+        }
+      }
+    });
   }
 }
 

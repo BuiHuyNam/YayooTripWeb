@@ -1,10 +1,11 @@
-<header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+<header
+  class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
   <div class="container flex h-16 items-center justify-between px-4">
     <!-- Logo -->
     <a routerLink="/" class="flex items-center space-x-2">
       <!-- MapPin icon -->
       <svg class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
         <circle cx="12" cy="10" r="3"></circle>
       </svg>
@@ -13,99 +14,96 @@
 
     <!-- Navigation -->
     <nav class="hidden md:flex items-center space-x-6">
-      <a routerLink="/" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }" class="text-sm font-medium hover:text-primary transition-colors">
+      <a routerLink="/" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+        class="text-sm font-medium hover:text-primary transition-colors">
         Trang chủ
       </a>
       <!-- <a routerLink="/schedule" routerLinkActive="text-primary" class="text-sm font-medium hover:text-primary transition-colors">
         Lịch trình mẫu
       </a> -->
-      <a routerLink="/discovery" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }" class="text-sm font-medium hover:text-primary transition-colors">
+      <a routerLink="/discovery" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+        class="text-sm font-medium hover:text-primary transition-colors">
         Khám phá
       </a>
-      <a routerLink="/social" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }" class="text-sm font-medium hover:text-primary transition-colors">
+      <a routerLink="/social" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+        class="text-sm font-medium hover:text-primary transition-colors">
         Cộng đồng
       </a>
       <a routerLink="/create-itinerary"
-         class="inline-flex items-center h-10 rounded-md px-4 font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-        <span class="mr-2" aria-hidden="true">＋</span>
+        class="inline-flex items-center h-10 rounded-md px-4 font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+        <span routerLink="/create-itinerary" class="mr-2" aria-hidden="true">＋</span>
         Tạo lịch trình
       </a>
 
     </nav>
 
 
-  
+
     <!-- Actions -->
     <div class="flex items-center space-x-4">
-     
+
 
       <!-- Create Itinerary Button -->
-  
-       <ng-container *ngIf="true">
-        
-        <!-- Auth buttons -->
-          <a routerLink="/auth/login"
-            class="text-sm font-medium hover:text-primary transition-colors">
-            Đăng nhập
-          </a>
-          <a routerLink="/auth/register"
-            class="inline-flex items-center h-10 rounded-md px-4 font-medium bg-primary-700 text-white hover:bg-primary-800 transition-colors">
-            Đăng ký
-          </a>
 
-       </ng-container> 
+      <ng-container *ngIf="true">
+
+        <!-- Auth buttons -->
+        <a routerLink="/auth/login" class="text-sm font-medium hover:text-primary transition-colors">
+          Đăng nhập
+        </a>
+        <a routerLink="/auth/register"
+          class="inline-flex items-center h-10 rounded-md px-4 font-medium bg-primary-700 text-white hover:bg-primary-800 transition-colors">
+          Đăng ký
+        </a>
+
+      </ng-container>
 
 
       <!-- User Menu (ẩn tạm) -->
-  <ng-container *ngIf="false">
-    <div class="relative">
-      <!-- giữ nguyên block menu cũ ở đây nếu muốn bật lại sau -->
-       <div class="relative">
-        
-         <!-- Username + Avatar -->
-      <button type="button" (click)="toggleMenu()"
+      <ng-container *ngIf="false">
+        <div class="relative">
+          <!-- giữ nguyên block menu cũ ở đây nếu muốn bật lại sau -->
+          <div class="relative">
+
+            <!-- Username + Avatar -->
+            <button type="button" (click)="toggleMenu()"
               class="relative flex items-center gap-2 rounded-full hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary px-2 py-1"
               aria-haspopup="menu" [attr.aria-expanded]="menuOpen">
-        <span class="text-sm font-medium">user@gmai.com</span>
-         <img src="assets/images/avatar.jpg" alt="User"
-             class="h-10 w-10 rounded-full object-cover" />
-        <span class="sr-only">Mở menu người dùng</span>
-      </button>
+              <span class="text-sm font-medium">user@gmai.com</span>
+              <img src="assets/images/avatar.jpg" alt="User" class="h-10 w-10 rounded-full object-cover" />
+              <span class="sr-only">Mở menu người dùng</span>
+            </button>
 
-        <!-- Dropdown -->
-        <div *ngIf="menuOpen"
-             class="absolute right-0 mt-2 w-56 rounded-md border bg-background shadow-md p-1"
-             role="menu" tabindex="-1">
-          <a routerLink="/profile" (click)="closeMenu()"
-             class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
-             role="menuitem">
-            <span aria-hidden="true">👤</span>
-            <span>Trang cá nhân</span>
-          </a>
-          <a routerLink="/itinerary-journal" (click)="closeMenu()"
-             class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
-             role="menuitem">
-            <span aria-hidden="true">📅</span>
-            <span>Nhật ký lịch trình</span>
-          </a>
-          <a routerLink="/settings" (click)="closeMenu()"
-             class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
-             role="menuitem">
-            <span aria-hidden="true">⚙️</span>
-            <span>Cài đặt</span>
-          </a>
-          <button type="button" (click)="closeMenu()"
-                  class="w-full text-left flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
-                  role="menuitem">
-            <span aria-hidden="true">🚪</span>
-            <span>Đăng xuất</span>
-          </button>
+            <!-- Dropdown -->
+            <div *ngIf="menuOpen" class="absolute right-0 mt-2 w-56 rounded-md border bg-background shadow-md p-1"
+              role="menu" tabindex="-1">
+              <a routerLink="/profile" (click)="closeMenu()"
+                class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted" role="menuitem">
+                <span aria-hidden="true">👤</span>
+                <span>Trang cá nhân</span>
+              </a>
+              <a routerLink="/itinerary-journal" (click)="closeMenu()"
+                class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted" role="menuitem">
+                <span aria-hidden="true">📅</span>
+                <span>Nhật ký lịch trình</span>
+              </a>
+              <a routerLink="/settings" (click)="closeMenu()"
+                class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted" role="menuitem">
+                <span aria-hidden="true">⚙️</span>
+                <span>Cài đặt</span>
+              </a>
+              <button type="button" (click)="closeMenu()"
+                class="w-full text-left flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
+                role="menuitem">
+                <span aria-hidden="true">🚪</span>
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </ng-container>
+      </ng-container>
       <!-- User Menu -->
-      
+
     </div>
   </div>
 </header>

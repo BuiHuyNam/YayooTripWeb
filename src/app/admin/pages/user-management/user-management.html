@@ -1,0 +1,131 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Quản lý người dùng</h1>
+        <p class="text-gray-500 mt-1">Quản lý tài khoản và hoạt động của người dùng</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div *ngFor="let c of cards" class="rounded-2xl border bg-white p-5 flex items-center gap-4 shadow-sm">
+            <div [class]="c.bg + ' w-12 h-12 rounded-xl grid place-items-center font-semibold ' + c.color">
+                <span>★</span>
+            </div>
+            <div>
+                <div class="text-3xl font-extrabold tabular-nums" [class]="c.color">{{ c.value | number }}</div>
+                <div class="text-sm text-gray-500">{{ c.label }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users list card -->
+    <div class="rounded-2xl border bg-white overflow-hidden">
+        <!-- Card header -->
+        <div class="px-4 py-3 border-b flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <h3 class="font-semibold text-gray-900">Danh sách người dùng ({{ filteredUsers.length }})</h3>
+
+            <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center w-full md:w-auto">
+                <div class="relative md:w-80 w-full">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 select-none">🔎</span>
+                    <input type="text"
+                        class="w-full h-10 pl-10 pr-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+                        placeholder="Tìm kiếm theo tên hoặc email..." [value]="search"
+                        (input)="setSearchFromEvent($event)" />
+                </div>
+
+                <select
+                    class="h-10 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                    [value]="statusFilter" (change)="setStatusFromEvent($event)">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="locked">Tạm khóa</option>
+                    <option value="pending">Chờ duyệt</option>
+                </select>
+
+                <button class="h-10 px-4 rounded-xl border text-sm hover:bg-gray-50">
+                    <svg class="inline-block -mt-0.5 mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 4h18l-7 8v6l-4 2v-8L3 4z"></path>
+                    </svg>
+                    Lọc nâng cao
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-gray-50 text-gray-600">
+                    <tr class="text-left">
+                        <th class="px-5 py-3 font-semibold">Người dùng</th>
+                        <th class="px-5 py-3 font-semibold">Trạng thái</th>
+                        <th class="px-5 py-3 font-semibold">Ngày tham gia</th>
+                        <th class="px-5 py-3 font-semibold">Hoạt động</th>
+                        <th class="px-5 py-3 font-semibold">Hoạt động cuối</th>
+                        <th class="px-5 py-3 font-semibold text-right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let u of filteredUsers; trackBy: trackByEmail"
+                        class="border-t hover:bg-gray-50 cursor-pointer" (click)="openUser(u)">
+                        <!-- User -->
+                        <td class="px-5 py-3">
+                            <div class="flex items-center gap-3">
+                                <img [src]="u.avatar" [alt]="u.name" class="h-10 w-10 rounded-full object-cover" />
+                                <div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="font-medium text-gray-900">{{ u.name }}</span>
+                                        <svg *ngIf="u.verified" class="h-4 w-4 text-sky-600" viewBox="0 0 24 24"
+                                            fill="currentColor">
+                                            <path d="M12 2 15 6l5 1-3 4 .5 5L12 14l-5.5 2L7 11 2 7l5-1 3-4z" />
+                                        </svg>
+                                    </div>
+                                    <div class="text-gray-500">{{ u.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Status -->
+                        <td class="px-5 py-3">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+                                [class]="statusBadgeClass(u.status)">
+                                {{ statusLabel(u.status) }}
+                            </span>
+                        </td>
+
+                        <!-- Joined -->
+                        <td class="px-5 py-3 text-gray-700">
+                            {{ u.joinedAt | date:'dd/MM/yyyy' }}
+                        </td>
+
+                        <!-- Activity -->
+                        <td class="px-5 py-3 text-gray-700">
+                            {{ u.posts }} bài viết<br />
+                            {{ u.itineraries }} lịch trình
+                        </td>
+
+                        <!-- Last active -->
+                        <td class="px-5 py-3 text-gray-700">
+                            {{ u.lastActive }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="px-5 py-3 text-right">
+                            <button (click)="more(u, $event)"
+                                class="h-9 w-9 inline-grid place-items-center rounded-lg hover:bg-gray-100"
+                                aria-label="More actions">
+                                ⋯
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="filteredUsers.length === 0">
+                        <td class="px-5 py-10 text-center text-gray-500" colspan="6">
+                            Không có người dùng phù hợp bộ lọc.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
