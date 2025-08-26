@@ -44,7 +44,7 @@
 
 
       <!-- Create Itinerary Button -->
-
+      @if(!login) {
       <ng-container *ngIf="true">
 
         <!-- Auth buttons -->
@@ -57,10 +57,13 @@
         </a>
 
       </ng-container>
+      }
+
 
 
       <!-- User Menu (ẩn tạm) -->
-      <ng-container *ngIf="false">
+      @if(login) {
+      <ng-container *ngIf="true">
         <div class="relative">
           <!-- giữ nguyên block menu cũ ở đây nếu muốn bật lại sau -->
           <div class="relative">
@@ -102,6 +105,7 @@
           </div>
         </div>
       </ng-container>
+      }
       <!-- User Menu -->
 
     </div>

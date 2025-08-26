@@ -36,7 +36,7 @@ export interface User {
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly  API_URL = environment.apiUrl;
+    private readonly API_URL = environment.apiUrl;
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -49,6 +49,7 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials)
             .pipe(
                 tap(response => {
+                    // this.login = true;
                     this.setToken(response.token);
                     this.setCurrentUser(response.user);
                 })

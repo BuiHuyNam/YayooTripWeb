@@ -10,12 +10,16 @@ import { RouterModule, RouterLink } from '@angular/router';
   styleUrl: './header-layout.css'
 })
 export class HeaderLayout {
-
-
   menuOpen = false;
+  login = false;
+  constructor(private eRef: ElementRef) {
+  }
 
-  constructor(private eRef: ElementRef) { }
-
+  checkLogin() {
+    if (localStorage.getItem('token')) {
+      this.login = true;
+    }
+  }
 
 
   toggleMenu() {
