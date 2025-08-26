@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-register',
   imports: [
-     FormsModule,
+    FormsModule,
     RouterLink,
     CommonModule
   ],
@@ -16,9 +17,10 @@ import { RouterLink } from '@angular/router';
 export class Register {
   showPassword = false;
   showConfirmPassword = false;
+  isLoading = false;
 
   formData = {
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -26,6 +28,11 @@ export class Register {
   };
 
   errorMsg = '';
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) { }
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
@@ -50,6 +57,38 @@ export class Register {
       this.errorMsg = 'Bạn cần đồng ý Điều khoản và Chính sách.';
       return;
     }
+
+    this.isLoading = true;
+
+    // Prepare data for API call
+    const registerData = {
+      name: this.formData.name,
+      email: this.formData.email,
+      password: this.formData.password
+    };
+
+    this.authService.register(registerData).subscribe({
+      next: (response) => {
+        console.log('Registration successful:', response);
+        this.isLoading = false;
+        // Redirect to home page or dashboard after successful registration
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error('Registration error:', error);
+        this.isLoading = false;
+
+        if (error.status === 409) {
+          this.errorMsg = 'Email đã tồn tại. Vui lòng sử dụng email khác.';
+        } else if (error.status === 400) {
+          this.errorMsg = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.';
+        } else if (error.status === 0) {
+          this.errorMsg = 'Không thể kết nối đến server. Vui lòng thử lại sau.';
+        } else {
+          this.errorMsg = 'Đăng ký thất bại. Vui lòng thử lại sau.';
+        }
+      }
+    });
 
     // Handle registration logic here
     console.log('Registration attempt:', this.formData);
