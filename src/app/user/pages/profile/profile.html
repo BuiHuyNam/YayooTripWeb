@@ -1,0 +1,238 @@
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Cover -->
+    <div class="relative h-48 md:h-64 rounded-xl overflow-hidden">
+        <img [src]="mockUser.coverImage" alt="Cover" class="w-full h-full object-cover" />
+        <button *ngIf="isOwnProfile"
+            class="absolute top-4 right-4 px-3 py-1 rounded-lg bg-white/80 hover:bg-white text-sm shadow">
+            📷 Đổi ảnh bìa
+        </button>
+    </div>
+
+    <!-- Header -->
+    <div class="rounded-2xl border bg-white p-6 shadow">
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <!-- Avatar -->
+            <div class="relative">
+                <img [src]="mockUser.avatar" [alt]="mockUser.name"
+                    class="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-white shadow" />
+                <button *ngIf="isOwnProfile"
+                    class="absolute -bottom-2 -right-2 h-8 w-8 rounded-full bg-white border shadow grid place-items-center">
+                    📷
+                </button>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 space-y-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-bold">{{ mockUser.name }}</h1>
+                        <span *ngIf="mockUser.verified"
+                            class="px-2 py-0.5 rounded-full text-xs bg-sky-100 text-sky-600">Verified</span>
+                    </div>
+                    <p class="text-gray-500">{{ mockUser.username }}</p>
+                </div>
+
+                <p class="text-sm leading-relaxed max-w-2xl">{{ mockUser.bio }}</p>
+
+                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div>📍 {{ mockUser.location }}</div>
+                    <div>📅 {{ mockUser.joinDate }}</div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+                <button *ngIf="isOwnProfile" class="px-4 py-2 rounded-lg border text-sm">⚙️ Chỉnh sửa</button>
+                <ng-container *ngIf="!isOwnProfile">
+                    <button (click)="toggleFollow()" [class.bg-sky-600]="!isFollowing" [class.text-white]="!isFollowing"
+                        class="px-4 py-2 rounded-lg border text-sm">
+                        {{ isFollowing ? 'Đang theo dõi' : 'Theo dõi' }}
+                    </button>
+                    <button class="px-4 py-2 rounded-lg border text-sm">💬 Nhắn tin</button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="rounded-xl border bg-white p-4 text-center">
+            <div class="text-2xl font-bold text-sky-600">{{ mockUser.stats.posts }}</div>
+            <div class="text-sm text-gray-500">Bài viết</div>
+        </div>
+        <div class="rounded-xl border bg-white p-4 text-center">
+            <div class="text-2xl font-bold text-sky-600">{{ mockUser.stats.itineraries }}</div>
+            <div class="text-sm text-gray-500">Lịch trình</div>
+        </div>
+        <div class="rounded-xl border bg-white p-4 text-center">
+            <div class="text-2xl font-bold text-sky-600">{{ mockUser.stats.placesVisited }}</div>
+            <div class="text-sm text-gray-500">Điểm đến</div>
+        </div>
+        <div class="rounded-xl border bg-white p-4 text-center">
+            <div class="text-2xl font-bold text-sky-600">{{ mockUser.stats.totalLikes }}</div>
+            <div class="text-sm text-gray-500">Lượt thích</div>
+        </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="rounded-2xl border bg-white p-6 shadow">
+        <h3 class="flex items-center gap-2 font-semibold mb-4">🏅 Thành tích</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div *ngFor="let a of mockUser.achievements" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                <div class="text-2xl">{{ a.icon }}</div>
+                <div>
+                    <div class="font-semibold text-sm">{{ a.name }}</div>
+                    <div class="text-xs text-gray-500">{{ a.description }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="rounded-2xl border bg-white p-6 shadow">
+        <div class="grid grid-cols-4 gap-2 mb-6">
+            <button (click)="activeTab='posts'" [class.bg-sky-600]="activeTab==='posts'"
+                [class.text-white]="activeTab==='posts'" class="px-3 py-2 rounded-lg border text-sm">Bài viết</button>
+            <button (click)="activeTab='itineraries'" [class.bg-sky-600]="activeTab==='itineraries'"
+                [class.text-white]="activeTab==='itineraries'" class="px-3 py-2 rounded-lg border text-sm">Lịch
+                trình</button>
+            <button (click)="activeTab='followers'" [class.bg-sky-600]="activeTab==='followers'"
+                [class.text-white]="activeTab==='followers'" class="px-3 py-2 rounded-lg border text-sm">Người theo
+                dõi</button>
+            <button (click)="activeTab='following'" [class.bg-sky-600]="activeTab==='following'"
+                [class.text-white]="activeTab==='following'" class="px-3 py-2 rounded-lg border text-sm">Đang theo
+                dõi</button>
+        </div>
+
+        <!-- Posts -->
+        <div *ngIf="activeTab==='posts'" class="space-y-4">
+            <div *ngFor="let p of mockPosts" class="rounded-xl border p-4 bg-gray-50">
+                <p class="mb-2">{{ p.content }}</p>
+                <img *ngIf="p.images.length" [src]="p.images[0]" class="w-full h-48 object-cover rounded-lg" />
+                <div class="text-xs text-gray-500 mt-2">{{ p.timestamp }} • {{ p.location }}</div>
+            </div>
+        </div>
+
+        <!-- Itineraries -->
+        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div *ngFor="let it of mockItineraries" class="rounded-xl border p-4 bg-gray-50">
+                <img [src]="it.image" class="w-full h-32 object-cover rounded-lg mb-3" />
+                <h4 class="font-semibold">{{ it.title }}</h4>
+                <p class="text-sm text-gray-500 mb-2">{{ it.description }}</p>
+                <div class="text-xs text-gray-400">⏱ {{ it.duration }} • 💰 {{ it.budget }}</div>
+            </div>
+        </div>
+
+        <!-- Followers -->
+        <div *ngIf="activeTab==='followers'" class="text-center py-12 text-gray-500">
+            👥 Danh sách người theo dõi sẽ hiển thị ở đây
+        </div>
+
+        <!-- Following -->
+        <div *ngIf="activeTab==='following'" class="text-center py-12 text-gray-500">
+            👥 Danh sách đang theo dõi sẽ hiển thị ở đây
+        </div>
+    </div>
+</div>
+
+<footer class="bg-gray-50 border-t">
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Brand -->
+            <div class="space-y-4">
+                <a routerLink="/" class="flex items-center space-x-2">
+                    <!-- MapPin -->
+                    <svg class="h-6 w-6 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 1 1 18 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span class="font-serif font-bold text-xl text-primary-600">YayooTrip</span>
+                </a>
+                <p class="text-sm text-gray-500">
+                    Nền tảng du lịch tự túc hàng đầu Việt Nam, kết nối cộng đồng yêu thích khám phá và trải nghiệm.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-primary-600" aria-label="Facebook">
+                        <!-- Facebook -->
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 4.98 3.64 9.12 8.4 9.93v-7.03H7.9v-2.9h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.1.18 2.1.18v2.3h-1.18c-1.16 0-1.52.72-1.52 1.45v1.75h2.59l-.41 2.9h-2.18V22c4.76-.81 8.4-4.95 8.4-9.93Z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary-600" aria-label="Instagram">
+                        <!-- Instagram -->
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5.4A4.6 4.6 0 1 0 16.6 12 4.6 4.6 0 0 0 12 7.4Zm6.1-.9a1.1 1.1 0 1 0 1.1 1.1 1.1 1.1 0 0 0-1.1-1.1Z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary-600" aria-label="YouTube">
+                        <!-- YouTube -->
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2 31.1 31.1 0 0 0 0 12a31.1 31.1 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.1 31.1 0 0 0 24 12a31.1 31.1 0 0 0-.5-5.8ZM9.6 15.5V8.5l6.2 3.5-6.2 3.5Z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div>
+                <h3 class="font-semibold text-gray-900 mb-4">Liên kết hữu ích</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a routerLink="/about" class="text-gray-500 hover:text-primary-600">Giới thiệu về chúng tôi</a>
+                    </li>
+                    <li><a routerLink="/destinations" class="text-gray-500 hover:text-primary-600">Lịch trình phổ
+                            biến</a></li>
+                    <li><a routerLink="/blog" class="text-gray-500 hover:text-primary-600">Blog du lịch</a></li>
+                    <li><a routerLink="/community" class="text-gray-500 hover:text-primary-600">Hướng dẫn sử dụng</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div>
+                <h3 class="font-semibold text-gray-900 mb-4">Hỗ trợ</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a routerLink="/help" class="text-gray-500 hover:text-primary-600">Trung tâm trợ giúp</a></li>
+                    <li><a routerLink="/safety" class="text-gray-500 hover:text-primary-600">Chính sách bảo mật</a></li>
+                    <li><a routerLink="/terms" class="text-gray-500 hover:text-primary-600">Điều khoản sử dụng</a></li>
+                    <li><a routerLink="/contact" class="text-gray-500 hover:text-primary-600">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div>
+                <h3 class="font-semibold text-gray-900 mb-4">Nhận thông tin mới nhất</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    Đăng ký nhận thông tin về các điểm đến mới và ưu đãi đặc biệt
+                </p>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                        <!-- Mail -->
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 4h16v16H4z" />
+                            <path d="m22 6-10 7L2 6" />
+                        </svg>
+                        <span>support@yayootrip.com</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                        <!-- Phone -->
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path
+                                d="M22 16.92V21a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 12.81 19.86 19.86 0 0 1 0 4.18 2 2 0 0 1 2 2h4.09a2 2 0 0 1 2 1.72c.12.9.3 1.77.54 2.61a2 2 0 0 1-.45 2.11L7 9a16 16 0 0 0 8 8l.59-1.18a2 2 0 0 1 2.11-.45c.84.24 1.71.42 2.61.54A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                        <span>1900 1234</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t mt-8 pt-8 text-center text-sm text-gray-500">
+            <p>&copy; 2024 YayooTrip - Tất cả quyền được bảo lưu.</p>
+        </div>
+    </div>
+</footer>
