@@ -56,6 +56,7 @@
         </div>
       </div>
     </div>
+    
 
     <!-- Results header -->
     <div class="flex items-center justify-between">
@@ -83,7 +84,7 @@
   </app-location-card>
 </div> -->
   <!-- Danh sách -->
-  <div *ngIf="viewMode === 'list'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div *ngIf="viewMode === 'list'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
     <app-location-card *ngFor="let loc of locations" [location]="loc" (select)="onSelect(loc)">
     </app-location-card>
   </div>
@@ -95,6 +96,37 @@
   </div>
 
 </section>
+<!-- Modal inline -->
+<div *ngIf="isDetailOpen" class="fixed inset-0 z-50">
+  <!-- backdrop -->
+  <div class="absolute inset-0 bg-black/40" (click)="closeDetail()"></div>
+
+  <!-- panel -->
+  <div class="relative z-10 min-h-full flex items-center justify-center p-4">
+    <div class="w-full max-w-3xl rounded-2xl bg-background border shadow-lg overflow-hidden"
+         role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <!-- header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b">
+        <h3 class="text-lg font-semibold truncate">
+          {{ selectedLocation?.name || 'Chi tiết địa điểm' }}
+        </h3>
+        <button type="button"
+                class="h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-muted"
+                (click)="closeDetail()" aria-label="Đóng">✕</button>
+      </div>
+
+      <!-- body: dùng lại LocationDetail, không gọi API lại -->
+      <div class="p-0">
+        <app-location-detail *ngIf="selectedLocation"  [id]="selectedId!" [location]="selectedLocation"></app-location-detail>
+      </div>
+
+    
+    </div>
+  </div>
+</div>
+
+
+
 <footer class="bg-gray-50 border-t">
   <div class="container mx-auto px-4 py-12">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

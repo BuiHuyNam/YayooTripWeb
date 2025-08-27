@@ -1,4 +1,4 @@
-import { Routes } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 import { HeaderLayout } from "../layouts/pages/header-layout/header-layout";
 import { FooterLayout } from "../layouts/pages/footer-layout/footer-layout";
 import { ppid } from "process";

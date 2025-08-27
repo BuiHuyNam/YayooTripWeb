@@ -1,0 +1,102 @@
+<article
+  class="rounded-2xl border bg-background overflow-hidden shadow-sm hover:shadow-md transition h-full flex"
+  [class.flex-col]="!compact" [class.flex-row]="compact"
+  [class.items-center]="compact" [class.gap-3]="compact">
+
+  <!-- Ảnh + badge rating -->
+  <ng-container *ngIf="!compact; else compactImg">
+    <div class="relative h-48 w-full flex-shrink-0">
+      <img
+        [src]="location.thumbnailUrl || '/assets/images/sample-placeholder.jpg'"
+        (error)="onImgError($event)"
+        [alt]="location.name"
+        class="h-full w-full object-cover" />
+
+      <!-- ⭐ rating -->
+      <span *ngIf="location.rating != null"
+            class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-xs border shadow-sm">
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true">
+          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        {{ location.rating | number:'1.1-1' }}
+      </span>
+    </div>
+  </ng-container>
+
+  <ng-template #compactImg>
+    <img
+      [src]="location.thumbnailUrl || '/assets/images/sample-placeholder.jpg'"
+      (error)="onImgError($event)"
+      [alt]="location.name"
+      class="h-16 w-16 object-cover rounded-md m-3 flex-shrink-0" />
+  </ng-template>
+
+  <!-- Nội dung -->
+  <div class="p-4 flex-1 flex flex-col" [class.p-0]="compact">
+    <!-- Compact -->
+    <div class="p-4" *ngIf="compact; else fullContent">
+      <div class="font-semibold" style="display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+        {{ location.name }}
+      </div>
+      <div class="text-sm text-muted-foreground"
+           style="display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+        {{ location.address }}
+      </div>
+      <div class="text-sm">Giá: {{ location.price | number }} đ</div>
+    </div>
+
+    <!-- Full -->
+    <ng-template #fullContent>
+      <!-- Tiêu đề -->
+      <h3 class="text-xl font-semibold text-primary hover:underline cursor-pointer"
+          style="display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+        {{ location.name }}
+      </h3>
+
+      <!-- Meta -->
+      <div class="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+        <p class="truncate">Địa chỉ: {{ location.address }}</p>
+        <span class="mx-1">•</span>
+        <ng-container *ngIf="location.distanceKm != null; else altMeta">
+          {{ location.distanceKm | number:'1.0-0' }} km
+        </ng-container>
+        <ng-template #altMeta>
+          <ng-container *ngIf="location.reviewCount != null">
+            {{ location.reviewCount | number:'1.0-0' }} đánh giá
+          </ng-container>
+        </ng-template>
+      </div>
+
+      <!-- Mô tả -->
+      <p *ngIf="location.description"
+         class="mt-2 text-sm text-muted-foreground"
+         style="display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+        {{ location.description }}
+      </p>
+
+      <!-- Tags -->
+      <div *ngIf="(location.amenities?.length || 0) > 0" class="mt-3 flex flex-wrap gap-2">
+        <span *ngFor="let a of amenitiesToShow"
+              class="px-3 py-1 rounded-full border text-sm bg-white shadow-sm">
+          {{ a }}
+        </span>
+        <span *ngIf="amenitiesMore > 0"
+              class="px-3 py-1 rounded-full border text-sm bg-white shadow-sm">
+          +{{ amenitiesMore }}
+        </span>
+      </div>
+
+      <!-- Hành động (ghim đáy) -->
+      <div class="mt-auto pt-4 flex flex-wrap items-center gap-2">
+        <button type="button" class="px-3 py-2 rounded-md text-sm bg-indigo-100 text-indigo-900"
+                (click)="select.emit(location)">
+          Chi tiết
+        </button>
+        <button type="button" class="px-3 py-2 rounded-md text-sm border"
+                (click)="select.emit(location)">
+          Đánh giá
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</article>
