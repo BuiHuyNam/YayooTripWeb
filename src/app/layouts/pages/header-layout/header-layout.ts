@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, RouterLink } from '@angular/router';
+import { RouterModule, RouterLink, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header-layout',
@@ -14,7 +14,7 @@ export class HeaderLayout {
 
   menuOpen = false;
 
-  constructor(private eRef: ElementRef) { }
+  constructor(private eRef: ElementRef, private router: Router) { }
 
 
 
