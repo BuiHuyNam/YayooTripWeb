@@ -1,9 +1,10 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, FormsModule],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
@@ -82,5 +83,33 @@ export class Profile {
 
   toggleFollow() {
     this.isFollowing = !this.isFollowing;
+  }
+  // --- STATE FORM CHỈNH SỬA ---
+  showEdit = false;
+  editModel: any = null;
+
+  openEdit() {
+    // tạo bản nháp để chỉnh (tránh sửa trực tiếp)
+    const { stats, achievements, ...shallow } = this.mockUser;
+    this.editModel = { ...shallow }; // các field người dùng chỉnh
+    this.showEdit = true;
+  }
+
+  closeEdit() {
+    this.showEdit = false;
+    this.editModel = null;
+  }
+
+  saveEdit() {
+    // Map các field được phép chỉnh vào mockUser
+    this.mockUser.name = this.editModel.name?.trim() || this.mockUser.name;
+    this.mockUser.username = this.editModel.username?.trim() || this.mockUser.username;
+    this.mockUser.bio = this.editModel.bio ?? this.mockUser.bio;
+    this.mockUser.location = this.editModel.location ?? this.mockUser.location;
+    this.mockUser.avatar = this.editModel.avatar || this.mockUser.avatar;
+    this.mockUser.coverImage = this.editModel.coverImage || this.mockUser.coverImage;
+    this.mockUser.verified = !!this.editModel.verified;
+
+    this.closeEdit();
   }
 }

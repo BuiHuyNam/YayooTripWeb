@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, RouterLink } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-header-layout',
@@ -9,16 +10,19 @@ import { RouterModule, RouterLink } from '@angular/router';
   templateUrl: './header-layout.html',
   styleUrl: './header-layout.css'
 })
-export class HeaderLayout {
+export class HeaderLayout implements OnInit {
   menuOpen = false;
   login = false;
-  constructor(private eRef: ElementRef) {
+
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('login');
+    this.login = !!token;   // có token => đã login
   }
 
-  checkLogin() {
-    if (localStorage.getItem('token')) {
-      this.login = true;
-    }
+  constructor(private eRef: ElementRef) {
+    // console.log(localStorage.getItem('login'))
+
   }
 
 
@@ -27,6 +31,14 @@ export class HeaderLayout {
   }
   closeMenu() {
     this.menuOpen = false;
+  }
+
+  // Logout
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('login');
+    this.login = false;
   }
 
   // Đóng menu khi click ra ngoài
