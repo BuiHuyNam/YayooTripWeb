@@ -50,6 +50,7 @@ export class Login {
       next: (response) => {
         console.log('Login successful:', response);
         this.isLoading = false;
+        alert("Đăng nhập thành công!");
         // Redirect to home page or dashboard after successful login
         this.router.navigate(['/home']);
       },

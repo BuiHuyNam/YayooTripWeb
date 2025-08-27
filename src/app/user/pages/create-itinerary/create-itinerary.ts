@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 type Destination = { id: string; name: string; province: string; type: string };
 type Service = { id: string; name: string; province: string; type: string; distanceKm: number };
@@ -39,7 +40,7 @@ type ScheduleItem = DestinationItem | ServiceItem;
 
 @Component({
   selector: 'app-create-itinerary',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './create-itinerary.html',
   styleUrls: ['./create-itinerary.css'],
 })

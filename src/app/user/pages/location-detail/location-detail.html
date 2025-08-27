@@ -1,0 +1,32 @@
+<div class="max-w-5xl mx-auto bg-background border rounded-2xl shadow-sm overflow-hidden">
+  <div class="relative h-80 bg-muted">
+    <img [src]="location?.thumbnailUrl || '/assets/images/sample-placeholder.jpg'"
+         (error)="onImgError($event)" [alt]="location?.name || 'Địa điểm'"
+         class="h-full w-full object-cover" />
+    <span *ngIf="location?.rating != null"
+          class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-xs border shadow-sm">
+      ⭐ {{ location?.rating | number:'1.1-1' }}
+    </span>
+  </div>
+
+  <div class="p-6 space-y-2">
+    <h1 class="text-2xl font-semibold text-primary">
+      {{ location?.name || 'Tên địa điểm' }}
+    </h1>
+    <!-- 👇 Hiển thị ID ở đây -->
+    <!-- <div class="text-xs text-muted-foreground">ID: {{ id || location?.id || '—' }}</div> -->
+
+    <div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+      <span>📍 {{ location?.address || 'Địa chỉ đang cập nhật' }}</span>
+      <span *ngIf="location?.distanceKm != null || location?.reviewCount != null">•</span>
+      <span *ngIf="location?.distanceKm != null">{{ location?.distanceKm | number:'1.0-0' }} km</span>
+      <span *ngIf="location?.distanceKm == null && location?.reviewCount != null">
+        {{ location?.reviewCount | number:'1.0-0' }} đánh giá
+      </span>
+    </div>
+
+    <p class="text-muted-foreground">
+      {{ location?.description || 'Mô tả đang cập nhật.' }}
+    </p>
+  </div>
+</div>

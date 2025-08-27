@@ -72,6 +72,7 @@ export class Register {
         console.log('Registration successful:', response);
         this.isLoading = false;
         // Redirect to home page or dashboard after successful registration
+        alert("Đăng ký thành công!");
         this.router.navigate(['/home']);
       },
       error: (error) => {
@@ -87,6 +88,7 @@ export class Register {
         } else {
           this.errorMsg = 'Đăng ký thất bại. Vui lòng thử lại sau.';
         }
+        alert("Đăng ký thất bại. Vui lòng thử lại!");
       }
     });
 

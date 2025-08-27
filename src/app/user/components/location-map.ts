@@ -1,21 +1,41 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// export interface LocationItem {
+//   id: string;
+//   name: string;
+//   categoryId: string;      // ví dụ: 'attractions' | 'restaurants' | 'cafes' | 'hotels' | 'shopping'
+//   categoryName: string;    // nhãn hiển thị
+//   price: number;
+//   address: string;
+//   lat: number;
+//   lng: number;
+//   thumbnailUrl: string;
+//   rating: number;
+//   reviewCount: number;
+//   distanceKm: number;
+//   description: string;
+//   amenities: string[];
+// }
 export interface LocationItem {
   id: string;
   name: string;
-  categoryId: string;      // ví dụ: 'attractions' | 'restaurants' | 'cafes' | 'hotels' | 'shopping'
-  categoryName: string;    // nhãn hiển thị
-  price: number;
   address: string;
-  lat: number;
-  lng: number;
-  thumbnailUrl: string;
-  rating: number;
-  reviewCount: number;
-  distanceKm: number;
-  description: string;
-  amenities: string[];
+  description?: string;
+
+  // tuỳ chọn cho UI
+  thumbnailUrl?: string;
+  categoryId?: string;
+  categoryName?: string;
+  price?: number;
+
+  lat?: number;
+  lng?: number;
+
+  rating?: number;
+  reviewCount?: number;
+  distanceKm?: number;
+  amenities?: string[];
 }
 
 @Component({
@@ -103,7 +123,7 @@ export interface LocationItem {
                      [ngStyle]="markerStyle(idx)"
                      (click)="select(loc)">
                   <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white"
-                       [ngClass]="categoryColor(loc.categoryId)">
+                       >
                     <!-- MapPin icon -->
                     <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
