@@ -61,7 +61,7 @@
                         <th class="px-5 py-3 font-semibold">Trạng thái</th>
                         <th class="px-5 py-3 font-semibold">Ngày tham gia</th>
                         <th class="px-5 py-3 font-semibold">Hoạt động</th>
-                        <th class="px-5 py-3 font-semibold">Hoạt động cuối</th>
+                        <!-- <th class="px-5 py-3 font-semibold">Hoạt động cuối</th> -->
                         <th class="px-5 py-3 font-semibold text-right">Hành động</th>
                     </tr>
                 </thead>
@@ -88,14 +88,14 @@
                         <!-- Status -->
                         <td class="px-5 py-3">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
-                                [class]="statusBadgeClass(u.status)">
-                                {{ statusLabel(u.status) }}
+                                [class]="statusBadgeClass(u.roleName)">
+                                {{ statusLabel(u.roleName) }}
                             </span>
                         </td>
 
                         <!-- Joined -->
                         <td class="px-5 py-3 text-gray-700">
-                            {{ u.joinedAt | date:'dd/MM/yyyy' }}
+                            {{ u.createdAt | date:'dd/MM/yyyy' }}
                         </td>
 
                         <!-- Activity -->
@@ -105,9 +105,9 @@
                         </td>
 
                         <!-- Last active -->
-                        <td class="px-5 py-3 text-gray-700">
+                        <!-- <td class="px-5 py-3 text-gray-700">
                             {{ u.lastActive }}
-                        </td>
+                        </td> -->
 
                         <!-- Actions -->
                         <td class="px-5 py-3 text-right">
