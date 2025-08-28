@@ -55,6 +55,7 @@ export class Login {
         console.log(localStorage.getItem('login'))
         // Redirect to home page or dashboard after successful login
         const role = this.authService.getRoles();
+        alert("Đăng nhập thành công!");
         if (role.includes("User")) {
           this.router.navigate(['/home']);
         } else {
@@ -72,6 +73,7 @@ export class Login {
         } else {
           this.errorMsg = 'Đăng nhập thất bại. Vui lòng thử lại sau.';
         }
+        alert("Đăng nhập thất bại. Vui lòng thử lại!");
       }
     });
   }

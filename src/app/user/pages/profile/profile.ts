@@ -6,7 +6,7 @@ import { Router } from 'express';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgIf, NgFor, FormsModule, DecimalPipe, DatePipe, RouterLink],
+  imports: [NgIf, NgFor, FormsModule, DatePipe, RouterLink],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })

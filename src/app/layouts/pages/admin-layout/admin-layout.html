@@ -46,7 +46,8 @@
       <nav class="flex-1 space-y-1 px-2 py-4">
         <a *ngFor="let item of navigation" [routerLink]="item.href" routerLinkActive="__active" #rla2="routerLinkActive"
           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-          [ngClass]="rla2.isActive ? 'bg-primary-100 text-primary-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+          [ngClass]="rla2.isActive ? 'bg-primary-100 text-primary-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+          [routerLinkActiveOptions]="{ exact: true }">
 
           <i class="fa-solid fa-fw mr-3 text-[18px]" [ngClass]="{
                'fa-gauge'           : item.icon === 'dashboard',

@@ -114,11 +114,11 @@
                     <!-- Header -->
                     <div class="flex items-start justify-between">
                         <div class="flex items-center gap-3">
-                            <img [src]="p.author?.avatar || '/assets/avatar-default.png'"
+                            <img [src]="p.author.avatar || '/assets/avatar-default.png'"
                                 class="w-10 h-10 rounded-full object-cover border" alt="avatar" />
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-slate-900">{{ p.author?.name }}</span>
+                                    <span class="font-semibold text-slate-900">{{ p.author.name }}</span>
                                     <span *ngIf="p.author?.verified"
                                         class="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-400 text-white">
                                         Verified
@@ -203,7 +203,7 @@
                         <div class="inline-flex items-center gap-2">
                             <span
                                 class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">💲</span>
-                            <span>{{ (it.budget ?? it.budget) | number }} VND</span>
+                            <span>{{ it.budget }}</span>
                         </div>
                     </div>
 
