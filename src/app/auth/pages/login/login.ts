@@ -26,6 +26,7 @@ export class Login {
     password: '',
   };
 
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -50,9 +51,15 @@ export class Login {
       next: (response) => {
         console.log('Login successful:', response);
         this.isLoading = false;
-        alert("Đăng nhập thành công!");
+        localStorage.setItem('login', response.token);
+        console.log(localStorage.getItem('login'))
         // Redirect to home page or dashboard after successful login
-        this.router.navigate(['/home']);
+        const role = this.authService.getRoles();
+        if (role.includes("User")) {
+          this.router.navigate(['/home']);
+        } else {
+          this.router.navigate(['/admin']);
+        }
       },
       error: (error) => {
         console.error('Login error:', error);

@@ -1,4 +1,4 @@
-<header
+<header onabort="checkLogin()"
   class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
   <div class="container flex h-16 items-center justify-between px-4">
     <!-- Logo -->
@@ -44,7 +44,7 @@
 
 
       <!-- Create Itinerary Button -->
-
+      @if(!login) {
       <ng-container *ngIf="true">
 
         <!-- Auth buttons -->
@@ -57,10 +57,13 @@
         </a>
 
       </ng-container>
+      }
+
 
 
       <!-- User Menu (ẩn tạm) -->
-      <ng-container *ngIf="false">
+      @if(login) {
+      <ng-container *ngIf="true">
         <div class="relative">
           <!-- giữ nguyên block menu cũ ở đây nếu muốn bật lại sau -->
           <div class="relative">
@@ -92,7 +95,7 @@
                 <span aria-hidden="true">⚙️</span>
                 <span>Cài đặt</span>
               </a>
-              <button type="button" (click)="closeMenu()"
+              <button type="button" (click)="logout()"
                 class="w-full text-left flex items-center gap-2 rounded-sm px-2 py-2 text-sm hover:bg-muted"
                 role="menuitem">
                 <span aria-hidden="true">🚪</span>
@@ -102,6 +105,7 @@
           </div>
         </div>
       </ng-container>
+      }
       <!-- User Menu -->
 
     </div>
