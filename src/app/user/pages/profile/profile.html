@@ -42,7 +42,9 @@
 
             <!-- Actions -->
             <div class="flex gap-2">
-                <button *ngIf="isOwnProfile" class="px-4 py-2 rounded-lg border text-sm">⚙️ Chỉnh sửa</button>
+                <button *ngIf="isOwnProfile" class="px-4 py-2 rounded-lg border text-sm" (click)="openEdit()">
+                    ⚙️ Chỉnh sửa
+                </button>
                 <ng-container *ngIf="!isOwnProfile">
                     <button (click)="toggleFollow()" [class.bg-sky-600]="!isFollowing" [class.text-white]="!isFollowing"
                         class="px-4 py-2 rounded-lg border text-sm">
@@ -105,22 +107,152 @@
         </div>
 
         <!-- Posts -->
-        <div *ngIf="activeTab==='posts'" class="space-y-4">
-            <div *ngFor="let p of mockPosts" class="rounded-xl border p-4 bg-gray-50">
-                <p class="mb-2">{{ p.content }}</p>
-                <img *ngIf="p.images.length" [src]="p.images[0]" class="w-full h-48 object-cover rounded-lg" />
-                <div class="text-xs text-gray-500 mt-2">{{ p.timestamp }} • {{ p.location }}</div>
-            </div>
+        <div *ngIf="activeTab==='posts'" class="space-y-6">
+            <article *ngFor="let p of mockPosts"
+                class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="p-5">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-3">
+                            <img [src]="p.author.avatar || '/assets/avatar-default.png'"
+                                class="w-10 h-10 rounded-full object-cover border" alt="avatar" />
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-slate-900">{{ p.author.name }}</span>
+                                    <span *ngIf="p.author?.verified"
+                                        class="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-400 text-white">
+                                        Verified
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-500 flex items-center gap-2">
+                                    <span>📍 {{ p.location }}</span>
+                                    <span>•</span>
+                                    <span>{{ p.timestamp }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="p-2 rounded-full hover:bg-slate-100 text-slate-500">⋯</button>
+                    </div>
+
+                    <!-- Content -->
+                    <p class="mt-4 text-slate-800">{{ p.content }}</p>
+
+                    <!-- Image -->
+                    <img *ngIf="p.images?.length" [src]="p.images[0]"
+                        class="mt-4 w-full max-h-[520px] object-cover rounded-xl border" alt="post-image" />
+
+                    <!-- Tags -->
+                    <div *ngIf="p.tags?.length" class="mt-3 flex flex-wrap gap-2">
+                        <span *ngFor="let t of p.tags" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs">
+                            #{{ t }}
+                        </span>
+                    </div>
+
+                    <!-- Footer actions -->
+                    <div class="mt-5 pt-4 border-t flex items-center justify-between text-slate-600">
+                        <div class="flex items-center gap-6 text-sm">
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>❤️</span><span>{{ p.likes || 0 }}</span>
+                            </button>
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>💬</span><span>{{ p.comments || 0 }}</span>
+                            </button>
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>↗</span><span>{{ p.shares || 0 }}</span>
+                            </button>
+                        </div>
+                        <button class="p-2 rounded-lg hover:bg-slate-100" [class.text-amber-600]="p.saved"
+                            (click)="toggleSave(p)">🔖</button>
+                    </div>
+                </div>
+            </article>
         </div>
 
+
         <!-- Itineraries -->
-        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div *ngFor="let it of mockItineraries" class="rounded-xl border p-4 bg-gray-50">
-                <img [src]="it.image" class="w-full h-32 object-cover rounded-lg mb-3" />
-                <h4 class="font-semibold">{{ it.title }}</h4>
-                <p class="text-sm text-gray-500 mb-2">{{ it.description }}</p>
-                <div class="text-xs text-gray-400">⏱ {{ it.duration }} • 💰 {{ it.budget }}</div>
-            </div>
+        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <article *ngFor="let it of mockItineraries"
+                class="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <!-- Cover -->
+                <div class="relative">
+                    <img [src]="it.image" alt="{{it.title}}" class="w-full h-48 object-cover">
+                    <!-- Badge công khai -->
+                    <span class="absolute top-3 right-3 inline-flex items-center gap-1.5
+                   px-3 py-1 rounded-lg text-xs font-semibold
+                   bg-cyan-600 text-white shadow">
+                        Công khai
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="p-5">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-1 group-hover:text-cyan-700 line-clamp-1">
+                        {{ it.title }}
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-3 line-clamp-2">
+                        {{ it.description }}
+                    </p>
+
+                    <!-- Duration & Budget -->
+                    <div class="flex items-center gap-5 text-sm text-slate-700">
+                        <div class="inline-flex items-center gap-2">
+                            <span
+                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">⏱</span>
+                            <span>{{ it.duration }}</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2">
+                            <span
+                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">💲</span>
+                            <span>{{ it.budget }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats row -->
+                    <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+                        <div class="flex items-center gap-5">
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+                                </svg>
+                                {{ it.views || 0 }}
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 016.5 4c1.74 0 3.41.81 4.5 2.09A5.62 5.62 0 0115.5 4 4.5 4.5 0 0120 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                                {{ it.likes || 0 }}
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
+                                </svg>
+                                {{ it.comments || 0 }}
+                            </span>
+                        </div>
+                        <span class="whitespace-nowrap">
+                            {{ it.createdAt | date:'dd/MM/yyyy' }}
+                        </span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 flex items-center justify-between pt-4 border-t">
+                        <div class="flex items-center gap-4 text-sm">
+                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                <span>👍</span> Thích
+                            </button>
+                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                <span>🔖</span> Lưu
+                            </button>
+                        </div>
+                        <button class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700
+                       hover:border-cyan-600 hover:text-cyan-700 font-medium" [routerLink]="['/itineraries', it.id]">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            </article>
         </div>
 
         <!-- Followers -->
@@ -236,3 +368,89 @@
         </div>
     </div>
 </footer>
+
+<!-- EDIT PROFILE MODAL (compact) -->
+<div *ngIf="showEdit" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3"
+    (click)="closeEdit()">
+    <div class="bg-white rounded-2xl shadow-2xl w-[560px] max-w-[95vw] p-5" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-semibold text-gray-900">Chỉnh sửa hồ sơ</h2>
+            <button class="h-8 w-8 grid place-items-center rounded-lg hover:bg-gray-100"
+                (click)="closeEdit()">✕</button>
+        </div>
+
+        <!-- Body -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <!-- Cover -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Ảnh bìa (URL)
+                <input [(ngModel)]="editModel.coverImage"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="https://..." />
+                <img *ngIf="editModel.coverImage" [src]="editModel.coverImage"
+                    class="mt-2 h-24 w-full object-cover rounded-md border" />
+            </label>
+
+            <!-- Avatar -->
+            <label class="font-medium text-gray-700">
+                Ảnh đại diện (URL)
+                <input [(ngModel)]="editModel.avatar"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="https://..." />
+                <div class="mt-2">
+                    <img *ngIf="editModel.avatar" [src]="editModel.avatar"
+                        class="h-16 w-16 rounded-full object-cover border" />
+                </div>
+            </label>
+
+            <!-- Name -->
+            <label class="font-medium text-gray-700">
+                Họ và tên
+                <input [(ngModel)]="editModel.name"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="Nhập họ tên" />
+            </label>
+
+            <!-- Username -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Username
+                <input [(ngModel)]="editModel.username"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="@username" />
+            </label>
+
+            <!-- Bio -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Giới thiệu
+                <textarea rows="3" [(ngModel)]="editModel.bio"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="Mô tả ngắn về bạn..."></textarea>
+            </label>
+
+            <!-- Location -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Vị trí (Thành phố, Quốc gia)
+                <input [(ngModel)]="editModel.location"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
+                    placeholder="Ví dụ: Hà Nội, Việt Nam" />
+            </label>
+
+            <!-- Verified -->
+            <div class="md:col-span-2">
+                <label class="inline-flex items-center gap-2">
+                    <input type="checkbox" [(ngModel)]="editModel.verified" class="h-4 w-4">
+                    <span class="text-gray-700">Đánh dấu tài khoản Verified</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-5 flex justify-end gap-2">
+            <button class="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm" (click)="closeEdit()">Hủy</button>
+            <button class="px-3 py-2 rounded-lg text-white bg-sky-600 hover:bg-sky-700 text-sm"
+                (click)="saveEdit()">Lưu</button>
+        </div>
+    </div>
+</div>
