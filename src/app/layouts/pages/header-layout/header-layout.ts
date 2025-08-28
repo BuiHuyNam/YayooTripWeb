@@ -1,21 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-header-layout',
+  standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, RouterLink],
   templateUrl: './header-layout.html',
   styleUrl: './header-layout.css'
 })
-export class HeaderLayout {
-
-
+export class HeaderLayout implements OnInit {
   menuOpen = false;
+  login = false;
 
-  constructor(private eRef: ElementRef, private router: Router) { }
+  constructor(private eRef: ElementRef, private router: Router) { 
+    
+  }
 
+
+
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('login');
+    this.login = !!token;
+      
+  }
+  }
+
+ 
 
 
   toggleMenu() {
@@ -23,6 +37,14 @@ export class HeaderLayout {
   }
   closeMenu() {
     this.menuOpen = false;
+  }
+
+  // Logout
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('login');
+    this.login = false;
   }
 
   // Đóng menu khi click ra ngoài

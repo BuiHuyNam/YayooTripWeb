@@ -2,6 +2,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { HeaderLayout } from "../layouts/pages/header-layout/header-layout";
 import { FooterLayout } from "../layouts/pages/footer-layout/footer-layout";
 import { ppid } from "process";
+import { ItineraryView } from "./pages/itinerary-view/itinerary-view";
 
 export const USER_ROUTES: Routes = [
   // {path: '', component: Home},
@@ -34,7 +35,13 @@ export const USER_ROUTES: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./pages/profile/profile').then(m => m.Profile)
-      }
+      },
+      {
+        path: 'itinerary-view',
+        loadComponent: () =>
+          import('./pages/itinerary-view/itinerary-view').then(m => m.ItineraryView)
+      },
+      { path: 'itineraries/:id', component: ItineraryView },
 
     ],
     // component: FooterLayout,
