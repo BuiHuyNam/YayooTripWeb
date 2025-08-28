@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { routes } from '../../../app.routes';
 
 type Destination = { id: string; name: string; province: string; type: string };
 type Service = { id: string; name: string; province: string; type: string; distanceKm: number };
@@ -44,7 +46,9 @@ type ScheduleItem = DestinationItem | ServiceItem;
   styleUrls: ['./create-itinerary.css'],
 })
 export class CreateItinerary {
+  constructor(private router: Router) {
 
+  }
 
   // ----- Mock data -----
   PROVINCES = ['Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Huế', 'Đà Lạt', 'Nha Trang'];
@@ -238,6 +242,8 @@ export class CreateItinerary {
   }
   completeItinerary() {
     alert('[Demo] Hoàn tất lịch trình! (mock)');
+    this.router.navigate(['/itineraries/1']);
+
   }
 
   // ----- Attach service to destination item -----

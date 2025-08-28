@@ -107,22 +107,152 @@
         </div>
 
         <!-- Posts -->
-        <div *ngIf="activeTab==='posts'" class="space-y-4">
-            <div *ngFor="let p of mockPosts" class="rounded-xl border p-4 bg-gray-50">
-                <p class="mb-2">{{ p.content }}</p>
-                <img *ngIf="p.images.length" [src]="p.images[0]" class="w-full h-48 object-cover rounded-lg" />
-                <div class="text-xs text-gray-500 mt-2">{{ p.timestamp }} • {{ p.location }}</div>
-            </div>
+        <div *ngIf="activeTab==='posts'" class="space-y-6">
+            <article *ngFor="let p of mockPosts"
+                class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="p-5">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-3">
+                            <img [src]="p.author?.avatar || '/assets/avatar-default.png'"
+                                class="w-10 h-10 rounded-full object-cover border" alt="avatar" />
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-slate-900">{{ p.author?.name }}</span>
+                                    <span *ngIf="p.author?.verified"
+                                        class="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-400 text-white">
+                                        Verified
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-500 flex items-center gap-2">
+                                    <span>📍 {{ p.location }}</span>
+                                    <span>•</span>
+                                    <span>{{ p.timestamp }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="p-2 rounded-full hover:bg-slate-100 text-slate-500">⋯</button>
+                    </div>
+
+                    <!-- Content -->
+                    <p class="mt-4 text-slate-800">{{ p.content }}</p>
+
+                    <!-- Image -->
+                    <img *ngIf="p.images?.length" [src]="p.images[0]"
+                        class="mt-4 w-full max-h-[520px] object-cover rounded-xl border" alt="post-image" />
+
+                    <!-- Tags -->
+                    <div *ngIf="p.tags?.length" class="mt-3 flex flex-wrap gap-2">
+                        <span *ngFor="let t of p.tags" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs">
+                            #{{ t }}
+                        </span>
+                    </div>
+
+                    <!-- Footer actions -->
+                    <div class="mt-5 pt-4 border-t flex items-center justify-between text-slate-600">
+                        <div class="flex items-center gap-6 text-sm">
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>❤️</span><span>{{ p.likes || 0 }}</span>
+                            </button>
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>💬</span><span>{{ p.comments || 0 }}</span>
+                            </button>
+                            <button class="inline-flex items-center gap-2 hover:text-cyan-700">
+                                <span>↗</span><span>{{ p.shares || 0 }}</span>
+                            </button>
+                        </div>
+                        <button class="p-2 rounded-lg hover:bg-slate-100" [class.text-amber-600]="p.saved"
+                            (click)="toggleSave(p)">🔖</button>
+                    </div>
+                </div>
+            </article>
         </div>
 
+
         <!-- Itineraries -->
-        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div *ngFor="let it of mockItineraries" class="rounded-xl border p-4 bg-gray-50">
-                <img [src]="it.image" class="w-full h-32 object-cover rounded-lg mb-3" />
-                <h4 class="font-semibold">{{ it.title }}</h4>
-                <p class="text-sm text-gray-500 mb-2">{{ it.description }}</p>
-                <div class="text-xs text-gray-400">⏱ {{ it.duration }} • 💰 {{ it.budget }}</div>
-            </div>
+        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <article *ngFor="let it of mockItineraries"
+                class="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <!-- Cover -->
+                <div class="relative">
+                    <img [src]="it.image" alt="{{it.title}}" class="w-full h-48 object-cover">
+                    <!-- Badge công khai -->
+                    <span class="absolute top-3 right-3 inline-flex items-center gap-1.5
+                   px-3 py-1 rounded-lg text-xs font-semibold
+                   bg-cyan-600 text-white shadow">
+                        Công khai
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="p-5">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-1 group-hover:text-cyan-700 line-clamp-1">
+                        {{ it.title }}
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-3 line-clamp-2">
+                        {{ it.description }}
+                    </p>
+
+                    <!-- Duration & Budget -->
+                    <div class="flex items-center gap-5 text-sm text-slate-700">
+                        <div class="inline-flex items-center gap-2">
+                            <span
+                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">⏱</span>
+                            <span>{{ it.duration }}</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2">
+                            <span
+                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">💲</span>
+                            <span>{{ (it.budget ?? it.budget) | number }} VND</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats row -->
+                    <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+                        <div class="flex items-center gap-5">
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+                                </svg>
+                                {{ it.views || 0 }}
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 016.5 4c1.74 0 3.41.81 4.5 2.09A5.62 5.62 0 0115.5 4 4.5 4.5 0 0120 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                                {{ it.likes || 0 }}
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
+                                </svg>
+                                {{ it.comments || 0 }}
+                            </span>
+                        </div>
+                        <span class="whitespace-nowrap">
+                            {{ it.createdAt | date:'dd/MM/yyyy' }}
+                        </span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 flex items-center justify-between pt-4 border-t">
+                        <div class="flex items-center gap-4 text-sm">
+                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                <span>👍</span> Thích
+                            </button>
+                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                <span>🔖</span> Lưu
+                            </button>
+                        </div>
+                        <button class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700
+                       hover:border-cyan-600 hover:text-cyan-700 font-medium" [routerLink]="['/itineraries', it.id]">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            </article>
         </div>
 
         <!-- Followers -->

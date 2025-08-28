@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export interface PostAuthor {
   name: string;
@@ -31,7 +32,7 @@ export interface Post {
 @Component({
   selector: 'app-post-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
 <article class="rounded-2xl border bg-background overflow-hidden p-0">
   <!-- Header -->
@@ -105,7 +106,7 @@ export interface Post {
           <div class="text-sm text-muted-foreground">{{ post.trip.meta }}</div>
         </div>
       </div>
-      <button type="button" class="px-3 py-2 rounded-md text-sm border inline-flex items-center gap-1">
+      <button routerLink="/itineraries/1" type="button" class="px-3 py-2 rounded-md text-sm border inline-flex items-center gap-1">
         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"></circle>
           <path d="M15 12H9m3-3v6"></path>
@@ -167,6 +168,6 @@ export class PostCardComponent {
     this.save.emit(this.post);
   }
 
-  onImgErr(e: Event)    { (e.target as HTMLImageElement).src = '/assets/images/avatar.jpg'; }
-  onPhotoErr(e: Event)  { (e.target as HTMLImageElement).src = '/assets/images/sample-placeholder.jpg'; }
+  onImgErr(e: Event) { (e.target as HTMLImageElement).src = '/assets/images/avatar.jpg'; }
+  onPhotoErr(e: Event) { (e.target as HTMLImageElement).src = '/assets/images/sample-placeholder.jpg'; }
 }
