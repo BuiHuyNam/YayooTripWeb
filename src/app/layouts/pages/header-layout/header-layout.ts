@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, RouterLink } from '@angular/router';
+import { RouterModule, RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
-import { Router } from 'express';
 
 @Component({
   selector: 'app-header-layout',
@@ -18,8 +17,10 @@ export class HeaderLayout implements OnInit {
   constructor(private eRef: ElementRef, private router: Router) { }
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined') {
     const token = localStorage.getItem('login');
-    this.login = !!token;   // có token => đã login
+    this.login = !!token;
+  }
   }
 
  
