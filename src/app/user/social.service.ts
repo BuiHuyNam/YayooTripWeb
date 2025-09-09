@@ -3,6 +3,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, catchError, map } from 'rxjs';
 import { environment } from '../environments/environment'; // kiểm tra path này đúng với project của bạn
 
+export interface ApiReactionSummary {
+  reactionType: string;
+  count: number;
+}
 export interface ApiPostDto {
   id: string;
   createdAt: string;
@@ -14,6 +18,7 @@ export interface ApiPostDto {
   postImg: string;
   userId: string;
   images?: string[];
+  reactionSummary?: ApiReactionSummary[];
 }
 
 export interface Post {
@@ -24,7 +29,7 @@ export interface Post {
   authorName: string;
   createdAt: Date;
   userId: string;
-  
+  likeCount: number;
 }
 
 export interface CreatePostRequest {
@@ -56,6 +61,7 @@ uploadImage(file: File): Observable<{ url: string }> {
 
   constructor(private http: HttpClient) {}
 
+//lấy ra các bài post
   getPosts(): Observable<Post[]> {
     const token = localStorage.getItem('login'); // token string thuần
 
@@ -84,6 +90,8 @@ uploadImage(file: File): Observable<{ url: string }> {
     return null;
   }
 
+
+  //tạo bài post
  createPost(payload: CreatePostRequest): Observable<Post> {
     const token = this.getTokenSafely();
     const headers = new HttpHeaders({
@@ -102,6 +110,28 @@ uploadImage(file: File): Observable<{ url: string }> {
     );
   }
 
+//add reaction
+  addReaction(postId: string, reactionType: 'Like' | 'Love' | 'Haha' = 'Like'): Observable<void> {
+  const token = this.getTokenSafely();
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  });
+
+  const body = {
+    targetType: 'Post',
+    targetId: postId,
+    reactionType: reactionType
+  };
+
+  // Nếu Reaction API ở cổng khác (5011) thì dùng base riêng
+  const REACTION_URL = `${this.API_BASE}/api/Reaction`;
+
+  return this.http.post<void>(REACTION_URL, body, { headers });
+}
+
+
 
 
   private toPost(dto: ApiPostDto): Post {
@@ -113,6 +143,7 @@ uploadImage(file: File): Observable<{ url: string }> {
       authorName: dto.createBy,
       createdAt: new Date(dto.createdAt),
       userId: dto.userId,
+      likeCount: dto.reactionSummary?.find(r => r.reactionType === 'Like')?.count || 0
     };
   }
 }
