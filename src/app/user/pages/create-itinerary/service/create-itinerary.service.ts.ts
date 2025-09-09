@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface ScheduleItem {
-  travelId?: string;
+  travelPlaceId?: string;
   accomodationId?: string;
   startTime: string;
   endTime: string;
@@ -72,9 +72,17 @@ export class CreateItineraryServiceTs {
     return this.http.get<Itinerary[]>(`${this.API_URL}/api/itinerary`);
   }
   createItinerary(itinerary: Itinerary): Observable<Itinerary> {
-    return this.http.post<Itinerary>(`${this.API_URL}/api/schedule`, itinerary, {
-      // responseType: 
+    const token = localStorage.getItem('token'); // hoặc nơi bạn lưu token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
+
+    return this.http.post<Itinerary>(
+      `${this.API_URL}/api/schedule`,
+      itinerary,
+      { headers }
+    );
   }
   updateItinerary(itinerary: Itinerary): Observable<Itinerary> {
     return this.http.put<Itinerary>(`${this.API_URL}/api/schedule`, itinerary);

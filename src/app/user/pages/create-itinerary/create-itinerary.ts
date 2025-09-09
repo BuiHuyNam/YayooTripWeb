@@ -75,7 +75,7 @@ export class CreateItinerary {
   hasApiError = false;
 
   get selectedItem(): ScheduleItem | null {
-    return this.items.find(i => (i.travelId === this.selectedItemId || i.accomodationId === this.selectedItemId)) || null;
+    return this.items.find(i => (i.travelPlaceId === this.selectedItemId || i.accomodationId === this.selectedItemId)) || null;
   }
 
   // ----- Add chooser modal -----
@@ -170,8 +170,8 @@ export class CreateItinerary {
   // ----- Actions -----
   addDestinationAsItem(dest: TravelPlace) {
     const scheduleItem: ScheduleItem = {
-      travelId: dest.id, // Sử dụng ID của destination làm travelId
-      accomodationId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      travelPlaceId: dest.id, // Sử dụng ID của destination làm travelId
+      accomodationId: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1",
       startTime: '2025-09-06T20:19:01.927Z',
       endTime: '2025-09-06T20:19:01.927Z',
       name: dest.name,
@@ -189,7 +189,7 @@ export class CreateItinerary {
 
   addServiceAsItem(svc: ServiceType) {
     const scheduleItem: ScheduleItem = {
-      travelId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      travelPlaceId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
       accomodationId: svc.id, // Sử dụng ID của service làm accomodationId
       startTime: '2025-09-06T20:19:01.927Z',
       endTime: '2025-09-06T20:19:01.927Z',
@@ -206,14 +206,14 @@ export class CreateItinerary {
   }
 
   removeItem(itemId: string) {
-    this.items = this.items.filter(i => (i.travelId !== itemId && i.accomodationId !== itemId));
+    this.items = this.items.filter(i => (i.travelPlaceId !== itemId && i.accomodationId !== itemId));
     if (this.selectedItemId === itemId) this.selectedItemId = null;
   }
 
   updateSelected(patch: Partial<ScheduleItem>) {
     if (!this.selectedItem) return;
     this.items = this.items.map(i => {
-      if ((i.travelId === this.selectedItem!.travelId && i.travelId) ||
+      if ((i.travelPlaceId === this.selectedItem!.travelPlaceId && i.travelPlaceId) ||
         (i.accomodationId === this.selectedItem!.accomodationId && i.accomodationId)) {
         return { ...i, ...patch };
       }
@@ -223,7 +223,7 @@ export class CreateItinerary {
 
   updateStartTime(itemId: string, value: any) {
     this.items = this.items.map(item => {
-      if ((item.travelId === itemId && item.travelId) ||
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
         (item.accomodationId === itemId && item.accomodationId)) {
         return { ...item, startTime: value };
       }
@@ -233,7 +233,7 @@ export class CreateItinerary {
 
   updateEndTime(itemId: string, value: any) {
     this.items = this.items.map(item => {
-      if ((item.travelId === itemId && item.travelId) ||
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
         (item.accomodationId === itemId && item.accomodationId)) {
         return { ...item, endTime: value };
       }
@@ -243,7 +243,7 @@ export class CreateItinerary {
 
   updateEstimatedCost(itemId: string, value: any) {
     this.items = this.items.map(item => {
-      if ((item.travelId === itemId && item.travelId) ||
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
         (item.accomodationId === itemId && item.accomodationId)) {
         return { ...item, estimatedCost: value };
       }
@@ -362,7 +362,7 @@ export class CreateItinerary {
 
   get attachFiltered(): ServiceType[] {
     const sel = this.selectedItem;
-    if (!sel || !sel.travelId) return [];
+    if (!sel || !sel.travelPlaceId) return [];
     return this.FilteredServices.filter(s =>
       (!this.attachServiceType || s.position === this.attachServiceType) &&
       s.status == 1
@@ -371,7 +371,7 @@ export class CreateItinerary {
 
   addAttachedService(svc: ServiceType) {
     const sel = this.selectedItem;
-    if (!sel || !sel.travelId) return;
+    if (!sel || !sel.travelPlaceId) return;
     const att: AttachedService = {
       id: this.uid(),
       serviceId: svc.id,
@@ -382,23 +382,23 @@ export class CreateItinerary {
       estimatedCost: '',
     };
     this.items = this.items.map(i => {
-      if (i.travelId !== sel.travelId) return i;
+      if (i.travelPlaceId !== sel.travelPlaceId) return i;
       return { ...i, attachedServices: [...(i.attachedServices || []), att] };
     });
   }
 
   removeAttachedService(attId: string) {
     const sel = this.selectedItem;
-    if (!sel || !sel.travelId) return;
+    if (!sel || !sel.travelPlaceId) return;
     this.items = this.items.map(i => {
-      if (i.travelId !== sel.travelId) return i;
+      if (i.travelPlaceId !== sel.travelPlaceId) return i;
       return { ...i, attachedServices: (i.attachedServices || []).filter(a => a.id !== attId) };
     });
   }
 
   updateAttachedServiceStartTime(itemId: string, attId: string, value: any) {
     this.items = this.items.map(i => {
-      if ((i.travelId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
       return {
         ...i,
         attachedServices: i.attachedServices.map(a =>
@@ -410,7 +410,7 @@ export class CreateItinerary {
 
   updateAttachedServiceEndTime(itemId: string, attId: string, value: any) {
     this.items = this.items.map(i => {
-      if ((i.travelId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
       return {
         ...i,
         attachedServices: i.attachedServices.map(a =>
@@ -422,7 +422,7 @@ export class CreateItinerary {
 
   updateAttachedServiceEstimatedCost(itemId: string, attId: string, value: any) {
     this.items = this.items.map(i => {
-      if ((i.travelId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
       return {
         ...i,
         attachedServices: i.attachedServices.map(a =>
