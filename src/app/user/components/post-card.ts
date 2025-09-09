@@ -7,22 +7,20 @@ export interface PostAuthor {
   avatarUrl: string;
   verified?: boolean;
 }
-
 export interface TripInfo {
-  title: string;         // "Khám phá Sapa 3 ngày 2 đêm - Trekking..."
-  meta: string;          // "3 ngày • 2.5 triệu VND"
+  title: string;
+  meta: string;
 }
-
 export interface Post {
   id: string;
   author: PostAuthor;
-  timeAgo: string;       // "2 giờ trước"
+  timeAgo: string;
   title: string;
   content: string;
-  rating?: number;       // 4.8
-  reviewCount?: number;  // 23
-  tags?: string[];       // ["Sapa","Fansipan","Cát Cát"]
-  photos?: string[];     // 2 ảnh
+  rating?: number;
+  reviewCount?: number;
+  tags?: string[];
+  photos?: string[];
   trip?: TripInfo;
   stats?: { likes: number; comments: number; shares: number; saves: number };
   liked?: boolean;
@@ -34,12 +32,17 @@ export interface Post {
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-<article class="rounded-2xl border bg-background overflow-hidden p-0">
+<article class="rounded-2xl border bg-background overflow-hidden mb-6">
   <!-- Header -->
   <div class="p-4 sm:p-6">
     <div class="flex items-start gap-3">
-      <img [src]="post.author.avatarUrl || '/assets/images/avatar.jpg'" (error)="onImgErr($event)"
-           alt="" class="h-10 w-10 rounded-full object-cover" />
+      <img
+        [src]="post.author.avatarUrl || '/assets/images/avatar.jpg'"
+        (error)="onImgErr($event)"
+        alt=""
+        class="h-10 w-10 rounded-full object-cover"
+        loading="lazy"
+      />
       <div class="flex-1">
         <div class="flex items-center gap-2">
           <span class="font-semibold">{{ post.author.name }}</span>
@@ -50,7 +53,6 @@ export interface Post {
         </div>
         <div class="text-xs text-muted-foreground">{{ post.timeAgo }}</div>
       </div>
-      <!-- (tùy chọn) menu … -->
     </div>
 
     <!-- Title -->
@@ -83,9 +85,14 @@ export interface Post {
   <!-- Photos -->
   <div *ngIf="post.photos?.length" class="px-4 sm:px-6 pb-4">
     <div class="grid grid-cols-2 gap-3">
-      <img *ngFor="let p of post.photos; index as i"
-           [src]="p" (error)="onPhotoErr($event)" alt=""
-           class="h-44 sm:h-52 w-full object-cover rounded-xl border" />
+      <img
+        *ngFor="let p of post.photos; index as i"
+        [src]="p || '/assets/images/sample-placeholder.jpg'"   
+        (error)="onPhotoErr($event)"
+        alt=""
+        class="h-44 sm:h-52 w-full object-cover rounded-xl border"
+        loading="lazy"
+      />
     </div>
   </div>
 
@@ -168,6 +175,23 @@ export class PostCardComponent {
     this.save.emit(this.post);
   }
 
-  onImgErr(e: Event) { (e.target as HTMLImageElement).src = '/assets/images/avatar.jpg'; }
-  onPhotoErr(e: Event) { (e.target as HTMLImageElement).src = '/assets/images/sample-placeholder.jpg'; }
+  // ⬇️ Quan trọng: chặn vòng lặp khi fallback
+ onImgErr(e: Event) {
+  const img = e.target as HTMLImageElement;
+  if (img.dataset && img.dataset['fallback'] === 'done') return; // chặn lặp
+  if (img.dataset) img.dataset['fallback'] = 'done';
+  img.onerror = null; // ngắt onerror trước khi đổi src
+  img.src = '/assets/images/avatar.jpg';
+}
+
+onPhotoErr(e: Event) {
+  const img = e.target as HTMLImageElement;
+  if (img.dataset && img.dataset['fallback'] === 'done') return; // chặn lặp
+  if (img.dataset) img.dataset['fallback'] = 'done';
+  img.onerror = null; // ngắt onerror trước khi đổi src
+  img.src = '/assets/images/sample-placeholder.jpg';
+}
+
+
+
 }

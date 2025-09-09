@@ -2,8 +2,9 @@
   <!-- Composer -->
   <div class="rounded-2xl border bg-background p-4 flex items-center gap-3">
     <div class="flex -space-x-2">
-      <img [src]="currentUser.avatarUrl || '/assets/images/avatar.jpg'" alt="{{ currentUser.name || 'Bạn' }}"
-        class="h-9 w-9 rounded-full border object-cover" />
+      <img [src]="currentUser.avatarUrl || '/assets/images/avatar.jpg'"
+           alt="{{ currentUser.name || 'Bạn' }}"
+           class="h-9 w-9 rounded-full border object-cover" />
     </div>
     <button type="button" (click)="openComposer()"
       class="flex-1 text-left px-4 py-3 rounded-xl border bg-white text-muted-foreground hover:bg-muted/50">
@@ -12,16 +13,11 @@
   </div>
 
   <!-- Feed -->
-  <!-- composer của bạn đặt phía trên -->
-
-  <!-- feed -->
-  <div class="mt-6 space-y-6">
+  <div class="mt-6 space-y-6 ">
     <app-post-card *ngFor="let post of posts" [post]="post" (save)="onSave($event)" (like)="onLike($event)">
     </app-post-card>
   </div>
-
 </div>
-
 
 <!-- Modal: chỉ render khi mở -->
 <ng-container *ngIf="isComposerOpen">
@@ -30,87 +26,143 @@
 
   <!-- dialog -->
   <div class="fixed inset-0 z-[101] flex items-start md:items-center justify-center p-4 md:p-6">
-    <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl" role="dialog" aria-modal="true" tabindex="-1"
-      (click)="$event.stopPropagation()">
+    <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl"
+         role="dialog" aria-modal="true" tabindex="-1"
+         (click)="$event.stopPropagation()">
+
       <!-- header -->
       <div class="flex items-center justify-between px-5 py-4 border-b">
         <h3 class="text-base md:text-lg font-semibold">Tạo bài viết mới</h3>
         <button class="p-2 rounded-lg hover:bg-gray-100" (click)="closeComposer()" aria-label="Đóng">✕</button>
       </div>
 
-      <!-- body (demo theo ảnh) -->
-      <div class="p-5 space-y-4">
+      <!-- body -->
+      <form class="p-5 space-y-4" (ngSubmit)="submitPost()" novalidate>
         <div class="text-sm text-gray-600 flex items-center gap-2">
-          <img class="h-8 w-8 rounded-full border" [src]="currentUser.avatarUrl || '/assets/images/avatar.jpg'">
+          <img class="h-8 w-8 rounded-full border"
+               [src]="currentUser.avatarUrl || '/assets/images/avatar.jpg'">
           <div class="font-medium">{{ currentUser.name || 'Nguyễn Văn A' }}</div>
+
           <div class="relative ml-auto" (keydown.escape)="isPrivacyOpen=false">
             <button type="button" (click)="togglePrivacy()"
-              class="text-xs px-2 py-1 border rounded-md flex items-center gap-1">
+                    class="text-xs px-2 py-1 border rounded-md flex items-center gap-1">
               {{ privacyLabel[selectedPrivacy] }} ▾
             </button>
 
             <!-- Menu -->
-            <div *ngIf="isPrivacyOpen" class="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg z-[102]">
+            <div *ngIf="isPrivacyOpen"
+                 class="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg z-[102]">
               <button type="button" (click)="selectPrivacy('public')"
-                class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
-                [class.bg-gray-100]="selectedPrivacy==='public'">
+                      class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
+                      [class.bg-gray-100]="selectedPrivacy==='public'">
                 🌐 <span>Công khai</span>
               </button>
               <button type="button" (click)="selectPrivacy('friends')"
-                class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
-                [class.bg-gray-100]="selectedPrivacy==='friends'">
+                      class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
+                      [class.bg-gray-100]="selectedPrivacy==='friends'">
                 👥 <span>Bạn bè</span>
               </button>
               <button type="button" (click)="selectPrivacy('private')"
-                class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
-                [class.bg-gray-100]="selectedPrivacy==='private'">
+                      class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
+                      [class.bg-gray-100]="selectedPrivacy==='private'">
                 🔒 <span>Riêng tư</span>
               </button>
             </div>
           </div>
         </div>
 
+        <!-- Tiêu đề -->
         <div class="space-y-2">
           <label class="text-sm font-medium">Tiêu đề bài viết *</label>
-          <input type="text" class="w-full rounded-lg border px-3 py-2"
-            placeholder="VD: Trải nghiệm tuyệt vời tại Sapa...">
+          <input type="text"
+                 class="w-full rounded-lg border px-3 py-2"
+                 placeholder="VD: Trải nghiệm tuyệt vời tại Sapa..."
+                 [(ngModel)]="newPost.title" name="postTitle" required />
         </div>
 
+        <!-- Nội dung -->
         <div class="space-y-2">
           <label class="text-sm font-medium">Nội dung *</label>
-          <textarea rows="4" class="w-full rounded-lg border px-3 py-2"
-            placeholder="Chia sẻ trải nghiệm du lịch của bạn..."></textarea>
+          <textarea rows="4"
+                    class="w-full rounded-lg border px-3 py-2"
+                    placeholder="Chia sẻ trải nghiệm du lịch của bạn..."
+                    [(ngModel)]="newPost.content" name="postContent" required></textarea>
         </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Địa điểm</label>
-          <div class="flex gap-2">
-            <input class="flex-1 rounded-lg border px-3 py-2" placeholder="Chọn địa điểm">
-            <button class="px-3 py-2 rounded-lg border">+</button>
+        <!-- Ẩn tạm thời: Địa điểm -->
+        <ng-container *ngIf="false">
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Địa điểm</label>
+            <div class="flex gap-2">
+              <input class="flex-1 rounded-lg border px-3 py-2" placeholder="Chọn địa điểm">
+              <button class="px-3 py-2 rounded-lg border" type="button">+</button>
+            </div>
           </div>
-        </div>
+        </ng-container>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Hình ảnh</label>
-          <label class="inline-flex items-center gap-2 rounded-lg border px-4 py-2 cursor-pointer">
-            ⬆️ <span>Thêm hình ảnh</span>
-            <input type="file" multiple class="hidden">
-          </label>
+        <!-- Hình ảnh (tạm bằng URL) -->
+        <div class="space-y-2" *ngIf="false">
+          <label class="text-sm font-medium">Hình ảnh (URL)</label>
+          <input type="text"
+                 class="w-full rounded-lg border px-3 py-2"
+                 placeholder="Dán URL hình ảnh (tùy chọn)"
+                 [(ngModel)]="newPost.postImg" name="postImgUrl" />
+          <!-- Preview nhỏ -->
+          <img *ngIf="newPost.postImg && newPost.postImg.trim()"
+               [src]="newPost.postImg"
+               (error)="onPreviewErr($event)"
+               alt=""
+               class="mt-2 h-28 w-full object-cover rounded-lg border"
+               loading="lazy" />
         </div>
+        
+<!-- ===== NEW: Upload ảnh từ máy ===== -->
+<div class="space-y-2">
+  <label class="text-sm font-medium">Thêm ảnh từ máy</label>
+  <div class="flex items-center gap-3">
+    <button type="button"
+            class="px-3 py-2 rounded-lg border hover:bg-gray-50"
+            (click)="fileInp.click()">
+      + Chọn ảnh
+    </button>
+    <div class="text-xs text-gray-500">Hỗ trợ JPG/PNG, tối đa 10 ảnh.</div>
+  </div>
+  <input #fileInp type="file" class="hidden" accept="image/*" multiple (change)="onFilesSelected($event)" />
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Lịch trình (bắt buộc) *</label>
-          <select class="w-full rounded-lg border px-3 py-2">
-            <option>Chọn lịch trình để chia sẻ</option>
-          </select>
+  <!-- Preview grid -->
+  <div *ngIf="previewUrls.length" class="grid grid-cols-3 gap-2 mt-2">
+    <div *ngFor="let url of previewUrls; let i = index" class="relative group">
+      <img [src]="url" class="h-28 w-full object-cover rounded-lg border" alt="" />
+      <button type="button"
+              class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition
+                     bg-black/60 text-white rounded-full w-6 h-6 text-xs"
+              (click)="removeSelectedImage(i)">
+        ✕
+      </button>
+    </div>
+  </div>
+</div>
+
+        <!-- Ẩn tạm thời: Lịch trình -->
+        <ng-container *ngIf="false">
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Lịch trình (bắt buộc) *</label>
+            <select class="w-full rounded-lg border px-3 py-2">
+              <option>Chọn lịch trình để chia sẻ</option>
+            </select>
+          </div>
+        </ng-container>
+
+        <!-- footer -->
+        <div class="pt-2 border-t mt-4 flex justify-end gap-3">
+          <button type="button" class="px-4 py-2 rounded-lg border" (click)="closeComposer()">Hủy</button>
+          <button type="submit"
+                  class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-60"
+                  [disabled]="isSubmitting || !newPost.title.trim() || !newPost.content.trim()">
+            {{ isSubmitting ? 'Đang đăng...' : 'Đăng bài' }}
+          </button>
         </div>
-      </div>
-
-      <!-- footer -->
-      <div class="px-5 py-4 border-t flex justify-end gap-3">
-        <button class="px-4 py-2 rounded-lg border" (click)="closeComposer()">Hủy</button>
-        <button class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">Đăng bài</button>
-      </div>
+      </form>
     </div>
   </div>
 </ng-container>
