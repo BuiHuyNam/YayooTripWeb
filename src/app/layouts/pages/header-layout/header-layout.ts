@@ -14,22 +14,23 @@ import { AuthService } from '../../../auth/auth.service';
 export class HeaderLayout implements OnInit {
   menuOpen = false;
   login = false;
+  email = '';
 
-  constructor(private eRef: ElementRef, private router: Router) { 
-    
+  constructor(private eRef: ElementRef, private router: Router) {
   }
 
 
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('login');
-    this.login = !!token;
-      
-  }
+      const token = localStorage.getItem('login');
+      this.login = !!token;
+      this.email = localStorage.getItem('email') || '';
+
+    }
   }
 
- 
+
 
 
   toggleMenu() {
