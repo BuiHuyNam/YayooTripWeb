@@ -1,5 +1,6 @@
 // src/app/core/services/auth.service.ts  (điều chỉnh path theo dự án của bạn)
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -45,6 +46,10 @@ export interface JwtPayload {
     aud?: string;
     [k: string]: any;
 }
+export interface RegisterOtp {
+    email: string;
+    otp: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -55,8 +60,13 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
 
-    constructor(private http: HttpClient) {
-        this.loadUserFromStorage();
+    private readonly isBrowser: boolean;
+
+    constructor(private http: HttpClient, @Inject(PLATFORM_ID) platformId: Object) {
+        this.isBrowser = isPlatformBrowser(platformId);
+        if (this.isBrowser) {
+            this.loadUserFromStorage();
+        }
     }
 
     // ====== Auth APIs ======
@@ -70,9 +80,23 @@ export class AuthService {
         );
     }
 
-    // Register API
-    register(userData: RegisterRequest): Observable<AuthResponse> {
-        return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData).pipe(
+    // Register API (OTP flow-friendly)
+    register(userData: RegisterRequest): Observable<AuthResponse | any> {
+        return this.http.post<AuthResponse | any>(`${this.API_URL}/register`, userData).pipe(
+            tap((response: any) => {
+                if (response && response.token) {
+                    this.setToken(response.token);
+                }
+                if (response && response.user) {
+                    this.setCurrentUser(response.user);
+                }
+            })
+        );
+    }
+    verifyOtp(otp: RegisterOtp): Observable<AuthResponse> {
+        // otp.email = this.getUsernameFromToken() || '';
+        console.log(this.getUsernameFromToken());
+        return this.http.post<AuthResponse>(`${this.API_URL}/verify-otp`, otp).pipe(
             tap((response) => {
                 this.setToken(response.token);
                 this.setCurrentUser(response.user);
@@ -82,8 +106,10 @@ export class AuthService {
 
     // Logout
     logout(): void {
-        localStorage.removeItem(this.TOKEN_KEY);
-        localStorage.removeItem(this.USER_KEY);
+        if (this.isBrowser) {
+            localStorage.removeItem(this.TOKEN_KEY);
+            localStorage.removeItem(this.USER_KEY);
+        }
         this.currentUserSubject.next(null);
     }
 
@@ -102,6 +128,7 @@ export class AuthService {
 
     // Get token
     getToken(): string | null {
+        if (!this.isBrowser) return null;
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
@@ -158,17 +185,21 @@ export class AuthService {
     // ====== Private ======
 
     private setToken(token: string): void {
+        if (!this.isBrowser) return;
         localStorage.setItem(this.TOKEN_KEY, token);
     }
 
     // Set current user
     private setCurrentUser(user: User): void {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        if (this.isBrowser) {
+            localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        }
         this.currentUserSubject.next(user);
     }
 
     // Load user from storage on app initialization
     private loadUserFromStorage(): void {
+        if (!this.isBrowser) return;
         const userStr = localStorage.getItem(this.USER_KEY);
         if (userStr) {
             try {
@@ -184,7 +215,8 @@ export class AuthService {
     private base64UrlToString(input: string): string {
         let base64 = input.replace(/-/g, '+').replace(/_/g, '/');
         while (base64.length % 4 !== 0) base64 += '=';
-        const binary = atob(base64);
+        // Guard atob for SSR
+        const binary = (this.isBrowser ? atob(base64) : Buffer.from(base64, 'base64').toString('binary')) as string;
         try {
             return decodeURIComponent(
                 binary.split('').map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')

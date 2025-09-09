@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -41,6 +42,11 @@ export class Login {
     // Handle login logic here
     if (!this.formData.email || !this.formData.password) {
       this.errorMsg = 'Vui lòng nhập đầy đủ thông tin.';
+      Swal.fire({
+        title: 'Đăng nhập thất bại!',
+        icon: 'error',
+        timer: 1500
+      });
       return;
     }
 
@@ -55,7 +61,11 @@ export class Login {
         console.log(localStorage.getItem('login'))
         // Redirect to home page or dashboard after successful login
         const role = this.authService.getRoles();
-        alert("Đăng nhập thành công!");
+        Swal.fire({
+          title: 'Đăng nhập thành công!',
+          icon: 'success',
+          timer: 1500
+        });
         if (role.includes("User")) {
           this.router.navigate(['/home']);
         } else {
@@ -73,7 +83,11 @@ export class Login {
         } else {
           this.errorMsg = 'Đăng nhập thất bại. Vui lòng thử lại sau.';
         }
-        alert("Đăng nhập thất bại. Vui lòng thử lại!");
+        Swal.fire({
+          title: 'Đăng nhập thất bại!',
+          icon: 'error',
+          timer: 1500
+        });
       }
     });
   }

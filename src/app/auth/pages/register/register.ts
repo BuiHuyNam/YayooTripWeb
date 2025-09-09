@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -70,10 +71,10 @@ export class Register {
     this.authService.register(registerData).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
+        localStorage.setItem('email', this.formData.email);
         this.isLoading = false;
-        // Redirect to home page or dashboard after successful registration
-        alert("Đăng ký thành công!");
-        this.router.navigate(['/home']);
+        Swal.fire({ title: 'Đăng ký thành công! Vui lòng nhập OTP.', icon: 'success', timer: 1500 });
+        this.router.navigate(['/auth/otp']);
       },
       error: (error) => {
         console.error('Registration error:', error);
@@ -88,7 +89,11 @@ export class Register {
         } else {
           this.errorMsg = 'Đăng ký thất bại. Vui lòng thử lại sau.';
         }
-        alert("Đăng ký thất bại. Vui lòng thử lại!");
+        Swal.fire({
+          title: 'Đăng ký thất bại!',
+          icon: 'error',
+          timer: 1500
+        });
       }
     });
 
