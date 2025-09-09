@@ -4,6 +4,7 @@ import { NgControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 // import { Router } from 'express';
 import { ItineraryService } from '../shared/itinerary.service';
+import { ItineraryDetailDto, ItineraryViewService } from './itinerary-view.service';
 
 type ItemKind = 'destination' | 'service';
 
@@ -53,10 +54,14 @@ export class ItineraryView implements OnInit {
   opened: Record<string, boolean> = {};
   itemOpened: Record<string, boolean> = {};
 
+  // API model
+  detail?: ItineraryDetailDto | null;
+
   constructor(
     private ar: ActivatedRoute,
     private router: Router,
-    private itinerarySrv: ItineraryService
+    private itinerarySrv: ItineraryService,
+    private itineraryViewSrv: ItineraryViewService
   ) { }
 
   ngOnInit(): void {
@@ -143,24 +148,74 @@ export class ItineraryView implements OnInit {
     // this.groups.forEach((g, i) => this.opened[g.id] = i === 0);
 
     const id = this.ar.snapshot.paramMap.get('id')!;
-    const it = this.itinerarySrv.getById(id);
+    // Fetch real detail by id
+    this.itineraryViewSrv.getById(id).subscribe({
+      next: (detail) => {
+        this.detail = detail;
+        // Map API detail into timeline groups UI
+        this.groups = this.mapDetailToGroups(detail);
+        // Date range header: fallback to created date if available
+        this.dateRange = detail.created ? (new Date(detail.created)).toLocaleDateString() : this.dateRange;
+        // Compute total cost from items and attached services if any cost fields exist
+        this.totalCost = this.groups
+          .flatMap((g: any) => g.items)
+          .reduce((sum: number, item: any) => sum
+            + (item.cost || 0)
+            + (item.attachedServices?.reduce((a: number, s: any) => a + (s.estimatedCost || 0), 0) || 0), 0);
+        // Open first group by default
+        this.groups.forEach((g: any, i: number) => this.opened[g.id] = i === 0);
+      },
+      error: () => {
+        // fallback to mock if API fails
+        const it = this.itinerarySrv.getById(id);
+        if (!it) { this.router.navigateByUrl('/'); return; }
+        this.dateRange = it.duration;
+        this.groups = this.buildDemoGroupsFor(id);
+        this.totalCost = this.groups
+          .flatMap(g => g.items)
+          .reduce((s: number, item: any) =>
+            s + (item.cost || 0) + (item.attachedServices?.reduce((a: number, b: any) => a + (b.estimatedCost || 0), 0) || 0), 0);
+        this.groups.forEach((g, i) => this.opened[g.id] = i === 0);
+      }
+    });
+  }
 
-    if (!it) { this.router.navigateByUrl('/'); return; }
-
-    // bạn có thể set meta cho header
-    this.dateRange = it.duration;
-
-    // TODO: map từ itinerary thực sang groups dùng cho timeline
-    // Tạm dùng dữ liệu mẫu (giống bạn đã có). Khi có API thực, map vào đây.
-    this.groups = this.buildDemoGroupsFor(id);
-
-    this.totalCost = this.groups
-      .flatMap(g => g.items)
-      .reduce((s: number, item: any) =>
-        s + (item.cost || 0) + (item.attachedServices?.reduce((a: number, b: any) => a + (b.estimatedCost || 0), 0) || 0), 0);
-
-    // mở nhóm đầu tiên
-    this.groups.forEach((g, i) => this.opened[g.id] = i === 0);
+  private mapDetailToGroups(detail: ItineraryDetailDto) {
+    // Create a group for each travel entry; synthesize minimal fields for timeline
+    const defaultStart = detail.created ? new Date(detail.created) : new Date();
+    return (detail.travels || []).map((t, idx) => {
+      const start = new Date(defaultStart.getTime() + idx * 60 * 60 * 1000);
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
+      return {
+        id: t.id,
+        title: t.name,
+        area: (t.address || '').split(',')[(t.address || '').split(',').length - 1]?.trim() || t.type || 'KHU VỰC',
+        subArea: '',
+        timeLabel: start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        color: 'linear-gradient(90deg,#22d3ee,#60a5fa)',
+        estimatedCost: 0,
+        items: [
+          {
+            id: t.id,
+            name: t.name,
+            kind: 'destination',
+            province: (t.address || '').trim(),
+            start,
+            end,
+            cost: 0,
+            durationText: '1h',
+            notes: t.description ? [t.description] : [],
+            attachedServices: (t.accomodations || []).map((a) => ({
+              id: a.id,
+              name: a.name,
+              start,
+              end,
+              estimatedCost: 0
+            }))
+          }
+        ]
+      };
+    });
   }
 
   private buildDemoGroupsFor(id: string) {

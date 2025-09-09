@@ -82,10 +82,15 @@
             >
           </div>
 
-          <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-md">
+          <!-- <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-md">
             Đăng nhập
-          </button>
-          
+          </button> -->
+           <button type="submit"
+                    class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-md disabled:opacity-60"
+                    [disabled]="isLoading || !formData.email.trim() || !formData.password.trim()">
+              {{ isLoading ? 'Đang đăng nhập…' : 'Đăng nhập' }}
+            </button>
+
         </form>
 
         <div class="mt-6 text-center">

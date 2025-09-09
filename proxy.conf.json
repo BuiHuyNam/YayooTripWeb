@@ -1,7 +1,18 @@
+
 {
   "/api": {
-    "target": "http://localhost:5009",
+    "target": "http://localhost:5000",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/ngrok-api": {
+    "target": "http://localhost:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/ngrok-api": "/api"
+    },
+    "logLevel": "debug"
   }
 }

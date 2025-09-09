@@ -3,41 +3,25 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { routes } from '../../../app.routes';
+import { CreateItineraryServiceTs, ScheduleItem, Itinerary, AttachedService } from './service/create-itinerary.service.ts';
+import { TravelPlace } from './service/create-itinerary.service.ts';
+import { Service as ServiceType } from './service/create-itinerary.service.ts';
 
 type Destination = { id: string; name: string; province: string; type: string };
 type Service = { id: string; name: string; province: string; type: string; distanceKm: number };
 
-type ScheduleItemBase = {
-  id: string;
-  refId: string;
-  name: string;
-  province?: string;
-  startTime?: string;
-  endTime?: string;
-  estimatedCost?: string | number;
-  gear?: string;
-};
 
-type AttachedService = {
-  id: string;
-  serviceId: string;
-  name: string;
-  startTime?: string;
-  endTime?: string;
-  estimatedCost?: string | number;
-  distanceKm: number;
-};
 
-type DestinationItem = ScheduleItemBase & {
+type DestinationItem = ScheduleItem & {
   kind: 'destination';
   attachedServices: AttachedService[];
 };
 
-type ServiceItem = ScheduleItemBase & {
+type ServiceItem = ScheduleItem & {
   kind: 'service';
 };
 
-type ScheduleItem = DestinationItem | ServiceItem;
+type ScheduleItemAdd = DestinationItem | ServiceItem;
 
 @Component({
   selector: 'app-create-itinerary',
@@ -46,7 +30,7 @@ type ScheduleItem = DestinationItem | ServiceItem;
   styleUrls: ['./create-itinerary.css'],
 })
 export class CreateItinerary {
-  constructor(private router: Router) {
+  constructor(private router: Router, private createItineraryService: CreateItineraryServiceTs) {
 
   }
 
@@ -63,6 +47,9 @@ export class CreateItinerary {
     { id: 'd5', name: 'Thung lũng Tình Yêu', province: 'Đà Lạt', type: 'Thiên nhiên' },
     { id: 'd6', name: 'Biển Nha Trang', province: 'Nha Trang', type: 'Thiên nhiên' },
   ];
+  TravelPlaces: TravelPlace[] = [];
+  FilteredTravelPlaces: TravelPlace[] = [];
+  // Services: Service[] = [];
 
   MOCK_SERVICES: Service[] = [
     { id: 's1', name: 'Khách sạn Hồ Gươm 3*', province: 'Hà Nội', type: 'Lưu trú', distanceKm: 1.2 },
@@ -72,7 +59,8 @@ export class CreateItinerary {
     { id: 's5', name: 'Bún bò Huế Cô Ba', province: 'Huế', type: 'Ăn uống', distanceKm: 0.8 },
     { id: 's6', name: 'Tour City Hà Nội nửa ngày', province: 'Hà Nội', type: 'Tour', distanceKm: 3.1 },
   ];
-
+  Services: ServiceType[] = [];
+  FilteredServices: ServiceType[] = [];
   // ----- Helpers -----
   private uid = () => Math.random().toString(36).slice(2);
   cn = (...cls: Array<string | false | null | undefined>) => cls.filter(Boolean).join(' ');
@@ -84,9 +72,10 @@ export class CreateItinerary {
 
   items: ScheduleItem[] = [];
   selectedItemId: string | null = null;
+  hasApiError = false;
 
   get selectedItem(): ScheduleItem | null {
-    return this.items.find(i => i.id === this.selectedItemId) || null;
+    return this.items.find(i => (i.travelPlaceId === this.selectedItemId || i.accomodationId === this.selectedItemId)) || null;
   }
 
   // ----- Add chooser modal -----
@@ -121,107 +110,145 @@ export class CreateItinerary {
     );
   }
 
-  updateAttachedServiceEstimatedCost(itemId: string, attId: string, value: any) {
-    this.items = this.items.map(i =>
-      i.id === itemId
-        ? {
-          ...i,
-          attachedServices: (i as any).attachedServices.map((a: any) =>
-            a.id === attId ? { ...a, estimatedCost: value } : a
-          ),
-        }
-        : i
-    );
-  }
+  // updateAttachedServiceEstimatedCost(itemId: string, attId: string, value: any) {
+  //   this.items = this.items.map(i =>
+  //     i.id === itemId
+  //       ? {
+  //         ...i,
+  //         attachedServices: (i as any).attachedServices.map((a: any) =>
+  //           a.id === attId ? { ...a, estimatedCost: value } : a
+  //         ),
+  //       }
+  //       : i
+  //   );
+  // }
 
-  updateAttachedServiceEndTime(itemId: string, attId: string, value: any) {
-    this.items = this.items.map(i =>
-      i.id === itemId
-        ? {
-          ...i,
-          attachedServices: (i as any).attachedServices.map((a: any) =>
-            a.id === attId ? { ...a, endTime: value } : a
-          ),
-        }
-        : i
-    );
-  }
+  // updateAttachedServiceEndTime(itemId: string, attId: string, value: any) {
+  //   this.items = this.items.map(i =>
+  //     i.id === itemId
+  //       ? {
+  //         ...i,
+  //         attachedServices: (i as any).attachedServices.map((a: any) =>
+  //           a.id === attId ? { ...a, endTime: value } : a
+  //         ),
+  //       }
+  //       : i
+  //   );
+  // }
 
-  updateAttachedServiceStartTime(itemId: string, attId: string, value: any) {
-    this.items = this.items.map(i =>
-      i.id === itemId
-        ? {
-          ...i,
-          attachedServices: (i as any).attachedServices.map((a: any) =>
-            a.id === attId ? { ...a, startTime: value } : a
-          ),
-        }
-        : i
-    );
-  }
+  // updateAttachedServiceStartTime(itemId: string, attId: string, value: any) {
+  //   this.items = this.items.map(i =>
+  //     i.id === itemId
+  //       ? {
+  //         ...i,
+  //         attachedServices: (i as any).attachedServices.map((a: any) =>
+  //           a.id === attId ? { ...a, startTime: value } : a
+  //         ),
+  //       }
+  //       : i
+  //   );
+  // }
 
-  updateEstimatedCost(id: string, value: any) {
-    this.items = this.items.map(item =>
-      item.id === id ? { ...item, estimatedCost: value } : item
-    );
-  }
+  // updateEstimatedCost(id: string, value: any) {
+  //   this.items = this.items.map(item =>
+  //     item.id === id ? { ...item, estimatedCost: value } : item
+  //   );
+  // }
 
-  updateStartTime(id: string, value: any) {
-    this.items = this.items.map(item =>
-      item.id === id ? { ...item, startTime: value } : item
-    );
-  }
+  // updateStartTime(id: string, value: any) {
+  //   this.items = this.items.map(item =>
+  //     item.id === id ? { ...item, startTime: value } : item
+  //   );
+  // }
 
-  updateEndTime(id: string, value: any) {
-    this.items = this.items.map(item =>
-      item.id === id ? { ...item, endTime: value } : item
-    );
-  }
+  // updateEndTime(id: string, value: any) {
+  //   this.items = this.items.map(item =>
+  //     item.id === id ? { ...item, endTime: value } : item
+  //   );
+  // }
 
   // ----- Actions -----
-  addDestinationAsItem(dest: Destination) {
-    const it: DestinationItem = {
-      id: this.uid(),
-      kind: 'destination',
-      refId: dest.id,
+  addDestinationAsItem(dest: TravelPlace) {
+    const scheduleItem: ScheduleItem = {
+      travelPlaceId: dest.id, // Sử dụng ID của destination làm travelId
+      accomodationId: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1",
+      startTime: '2025-09-06T20:19:01.927Z',
+      endTime: '2025-09-06T20:19:01.927Z',
       name: dest.name,
-      province: dest.province,
-      startTime: '',
-      endTime: '',
-      estimatedCost: '',
-      gear: '',
+      address: dest.address,
+      kind: 'destination',
       attachedServices: [],
     };
-    this.items = [...this.items, it];
-    this.selectedItemId = it.id;
+    this.items = [...this.items, scheduleItem];
+    this.selectedItemId = dest.id;
     this.closeAllAddPanels();
+
+    // Gọi API để tạo itinerary sau khi thêm item
+    // this.createItinerary();
   }
 
-  addServiceAsItem(svc: Service, withTimes = true) {
-    const it: ServiceItem = {
-      id: this.uid(),
-      kind: 'service',
-      refId: svc.id,
+  addServiceAsItem(svc: ServiceType) {
+    const scheduleItem: ScheduleItem = {
+      travelPlaceId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+      accomodationId: svc.id, // Sử dụng ID của service làm accomodationId
+      startTime: '2025-09-06T20:19:01.927Z',
+      endTime: '2025-09-06T20:19:01.927Z',
       name: svc.name,
-      province: svc.province,
-      startTime: withTimes ? this.serviceStart : '',
-      endTime: withTimes ? this.serviceEnd : '',
-      estimatedCost: '',
-      gear: '',
+      address: svc.address,
+      kind: 'service',
     };
-    this.items = [...this.items, it];
-    this.selectedItemId = it.id;
+    this.items = [...this.items, scheduleItem];
+    this.selectedItemId = svc.id;
     this.closeAllAddPanels();
+
+    // Gọi API để tạo itinerary sau khi thêm item
+    // this.createItinerary();
   }
 
-  removeItem(id: string) {
-    this.items = this.items.filter(i => i.id !== id);
-    if (this.selectedItemId === id) this.selectedItemId = null;
+  removeItem(itemId: string) {
+    this.items = this.items.filter(i => (i.travelPlaceId !== itemId && i.accomodationId !== itemId));
+    if (this.selectedItemId === itemId) this.selectedItemId = null;
   }
 
   updateSelected(patch: Partial<ScheduleItem>) {
     if (!this.selectedItem) return;
-    this.items = this.items.map(i => (i.id === this.selectedItem!.id ? { ...i, ...patch } as ScheduleItem : i));
+    this.items = this.items.map(i => {
+      if ((i.travelPlaceId === this.selectedItem!.travelPlaceId && i.travelPlaceId) ||
+        (i.accomodationId === this.selectedItem!.accomodationId && i.accomodationId)) {
+        return { ...i, ...patch };
+      }
+      return i;
+    });
+  }
+
+  updateStartTime(itemId: string, value: any) {
+    this.items = this.items.map(item => {
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
+        (item.accomodationId === itemId && item.accomodationId)) {
+        return { ...item, startTime: value };
+      }
+      return item;
+    });
+  }
+
+  updateEndTime(itemId: string, value: any) {
+    this.items = this.items.map(item => {
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
+        (item.accomodationId === itemId && item.accomodationId)) {
+        return { ...item, endTime: value };
+      }
+      return item;
+    });
+  }
+
+  updateEstimatedCost(itemId: string, value: any) {
+    this.items = this.items.map(item => {
+      if ((item.travelPlaceId === itemId && item.travelPlaceId) ||
+        (item.accomodationId === itemId && item.accomodationId)) {
+        return { ...item, estimatedCost: value };
+      }
+      return item;
+    });
   }
 
   closeAllAddPanels() {
@@ -242,8 +269,90 @@ export class CreateItinerary {
   }
   completeItinerary() {
     alert('[Demo] Hoàn tất lịch trình! (mock)');
-    this.router.navigate(['/itineraries/1']);
+    this.createItinerary()
+    // this.router.navigate(['/itineraries/1']);
+  }
 
+  createItinerary() {
+    const itinerary: Itinerary = {
+      name: this.name,
+      description: 'Lịch trình được tạo từ ứng dụng',
+      status: 0,
+      type: 'travel',
+      items: this.items
+    };
+
+    this.createItineraryService.createItinerary(itinerary).subscribe({
+      next: (response) => {
+        console.log('Itinerary created successfully:', response);
+        alert('✅ Lịch trình đã được tạo thành công!');
+        // Xóa dữ liệu tạm thời sau khi tạo thành công
+        this.clearTemporaryData();
+      },
+      error: (error) => {
+        console.error('Error creating itinerary:', error);
+        if (error.status === 503) {
+          // Lưu dữ liệu tạm thời vào localStorage
+          this.saveTemporaryData(itinerary);
+          alert('⚠️ Backend server hiện không khả dụng. Dữ liệu đã được lưu tạm thời.');
+        } else {
+          alert('❌ Có lỗi xảy ra khi tạo lịch trình. Vui lòng thử lại sau.');
+        }
+      }
+    });
+  }
+
+  saveTemporaryData(itinerary: Itinerary) {
+    try {
+      const tempData = {
+        itinerary: itinerary,
+        timestamp: new Date().toISOString(),
+        retryCount: 0
+      };
+      localStorage.setItem('temp_itinerary', JSON.stringify(tempData));
+    } catch (error) {
+      console.error('Error saving temporary data:', error);
+    }
+  }
+
+  clearTemporaryData() {
+    try {
+      localStorage.removeItem('temp_itinerary');
+    } catch (error) {
+      console.error('Error clearing temporary data:', error);
+    }
+  }
+
+  retryFailedItinerary() {
+    try {
+      const tempData = localStorage.getItem('temp_itinerary');
+      if (tempData) {
+        const parsed = JSON.parse(tempData);
+        parsed.retryCount = (parsed.retryCount || 0) + 1;
+
+        if (parsed.retryCount <= 3) {
+          this.createItineraryService.createItinerary(parsed.itinerary).subscribe({
+            next: (response) => {
+              console.log('Retry successful:', response);
+              alert('✅ Lịch trình đã được tạo thành công sau khi thử lại!');
+              this.clearTemporaryData();
+            },
+            error: (error) => {
+              console.error('Retry failed:', error);
+              localStorage.setItem('temp_itinerary', JSON.stringify(parsed));
+              alert(`❌ Thử lại lần ${parsed.retryCount} thất bại. Vui lòng thử lại sau.`);
+            }
+          });
+        } else {
+          alert('❌ Đã thử lại quá nhiều lần. Vui lòng liên hệ hỗ trợ.');
+        }
+      } else {
+        alert('ℹ️ Không có dữ liệu tạm thời để thử lại.');
+      }
+    } catch (error) {
+      console.error('Error retrying failed itinerary:', error);
+      alert('❌ Có lỗi xảy ra khi thử lại.');
+    }
   }
 
   // ----- Attach service to destination item -----
@@ -251,42 +360,149 @@ export class CreateItinerary {
   attachServiceType = '';
   attachDistance = 5;
 
-  get attachFiltered(): Service[] {
+  get attachFiltered(): ServiceType[] {
     const sel = this.selectedItem;
-    if (!sel || sel.kind !== 'destination') return [];
-    return this.MOCK_SERVICES.filter(s =>
-      s.province === sel.province &&
-      (!this.attachServiceType || s.type === this.attachServiceType) &&
-      s.distanceKm <= this.attachDistance
+    if (!sel || !sel.travelPlaceId) return [];
+    return this.FilteredServices.filter(s =>
+      (!this.attachServiceType || s.position === this.attachServiceType) &&
+      s.status == 1
     );
   }
 
-  addAttachedService(svc: Service) {
+  addAttachedService(svc: ServiceType) {
     const sel = this.selectedItem;
-    if (!sel || sel.kind !== 'destination') return;
+    if (!sel || !sel.travelPlaceId) return;
     const att: AttachedService = {
       id: this.uid(),
       serviceId: svc.id,
       name: svc.name,
-      distanceKm: svc.distanceKm,
+      distanceKm: svc.status || 0,
       startTime: '',
       endTime: '',
       estimatedCost: '',
     };
     this.items = this.items.map(i => {
-      if (i.id !== sel.id) return i;
-      const dest = i as DestinationItem;
-      return { ...dest, attachedServices: [...(dest.attachedServices || []), att] };
+      if (i.travelPlaceId !== sel.travelPlaceId) return i;
+      return { ...i, attachedServices: [...(i.attachedServices || []), att] };
     });
   }
 
   removeAttachedService(attId: string) {
     const sel = this.selectedItem;
-    if (!sel || sel.kind !== 'destination') return;
+    if (!sel || !sel.travelPlaceId) return;
     this.items = this.items.map(i => {
-      if (i.id !== sel.id) return i;
-      const dest = i as DestinationItem;
-      return { ...dest, attachedServices: (dest.attachedServices || []).filter(a => a.id !== attId) };
+      if (i.travelPlaceId !== sel.travelPlaceId) return i;
+      return { ...i, attachedServices: (i.attachedServices || []).filter(a => a.id !== attId) };
     });
+  }
+
+  updateAttachedServiceStartTime(itemId: string, attId: string, value: any) {
+    this.items = this.items.map(i => {
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      return {
+        ...i,
+        attachedServices: i.attachedServices.map(a =>
+          a.id === attId ? { ...a, startTime: value } : a
+        )
+      };
+    });
+  }
+
+  updateAttachedServiceEndTime(itemId: string, attId: string, value: any) {
+    this.items = this.items.map(i => {
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      return {
+        ...i,
+        attachedServices: i.attachedServices.map(a =>
+          a.id === attId ? { ...a, endTime: value } : a
+        )
+      };
+    });
+  }
+
+  updateAttachedServiceEstimatedCost(itemId: string, attId: string, value: any) {
+    this.items = this.items.map(i => {
+      if ((i.travelPlaceId !== itemId && i.accomodationId !== itemId) || !i.attachedServices) return i;
+      return {
+        ...i,
+        attachedServices: i.attachedServices.map(a =>
+          a.id === attId ? { ...a, estimatedCost: value } : a
+        )
+      };
+    });
+  }
+
+
+  loadTravelPlaces() {
+    this.createItineraryService.getTravelPlaces().subscribe({
+      next: (data) => {
+        this.TravelPlaces = data;
+        this.FilteredTravelPlaces = this.TravelPlaces.filter(d =>
+          (!this.filterProvince || d.address === this.filterProvince) &&
+          (!this.filterDestType || d.position === this.filterDestType) &&
+          (!this.filterKeyword || d.name.toLowerCase().includes(this.filterKeyword.toLowerCase()))
+        );
+      },
+      error: (error) => {
+        console.error('Error loading travel places:', error);
+        this.hasApiError = true;
+        // Sử dụng mock data khi API không khả dụng
+        this.TravelPlaces = this.MOCK_DESTINATIONS.map(d => ({
+          id: d.id,
+          name: d.name,
+          description: `Mô tả về ${d.name}`,
+          address: d.province,
+          position: d.type,
+          type: d.type
+        }));
+        this.FilteredTravelPlaces = this.TravelPlaces.filter(d =>
+          (!this.filterProvince || d.address === this.filterProvince) &&
+          (!this.filterDestType || d.position === this.filterDestType) &&
+          (!this.filterKeyword || d.name.toLowerCase().includes(this.filterKeyword.toLowerCase()))
+        );
+      }
+    });
+  }
+
+  loadServices() {
+    this.createItineraryService.getServices().subscribe({
+      next: (data) => {
+        this.Services = data;
+        this.FilteredServices = this.Services.filter(s =>
+          (!this.serviceProvince || s.address === this.serviceProvince) &&
+          (!this.serviceType || s.position === this.serviceType) &&
+          s.status === 1
+        );
+      },
+      error: (error) => {
+        console.error('Error loading services:', error);
+        this.hasApiError = true;
+        // Sử dụng mock data khi API không khả dụng
+        this.Services = this.MOCK_SERVICES.map(s => ({
+          id: s.id,
+          name: s.name,
+          description: `Mô tả về ${s.name}`,
+          address: s.province,
+          position: s.type,
+          image: '',
+          status: s.distanceKm
+        }));
+        this.FilteredServices = this.Services.filter(s =>
+          (!this.serviceProvince || s.address === this.serviceProvince) &&
+          (!this.serviceType || s.position === this.serviceType) &&
+          s.status === 1
+        );
+      }
+    });
+  }
+  retryApiCalls() {
+    this.hasApiError = false;
+    this.loadTravelPlaces();
+    this.loadServices();
+  }
+
+  ngOnInit() {
+    this.loadTravelPlaces();
+    this.loadServices();
   }
 }

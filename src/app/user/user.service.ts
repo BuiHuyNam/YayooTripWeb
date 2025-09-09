@@ -13,6 +13,7 @@ export interface ApiLocationDto {
   address: string;
   position: string; // "48.8584° N, 2.2945° E"
   type: string;     // "Monument", "Historical Site", ...
+  urlImage?: string;            
 }
 
 // ---- App model (khớp với LocationCardComponent) ----
@@ -23,7 +24,7 @@ export interface LocationItem {
   description?: string;
 
   // mở rộng để hợp UI
-  thumbnailUrl?: string;
+  urlImage?: string;  
   categoryId?: string;
   categoryName?: string; // dùng type của API
   price?: number;
@@ -40,8 +41,8 @@ export interface LocationItem {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   // 🔑 lấy base URL từ environment
-  private readonly API_BASE_URL = environment.apiUrlTravelPlace; 
-  private readonly ENDPOINT = '/TravelPlace';   // 👉 backend route, đổi cho đúng
+  private readonly API_BASE_URL = environment.apiGatWay; 
+  private readonly ENDPOINT = '/api/travelplace';   // 👉 backend route, đổi cho đúng
 
   private readonly DEFAULT_THUMBNAIL = '/assets/images/sample-placeholder.jpg';
 
@@ -82,7 +83,7 @@ export class UserService {
 
       categoryId: this.slugify(dto.type),
       categoryName: dto.type,
-      thumbnailUrl: this.DEFAULT_THUMBNAIL,
+      urlImage: (dto.urlImage || '').trim() || this.DEFAULT_THUMBNAIL,
 
       lat,
       lng
