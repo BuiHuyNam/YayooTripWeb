@@ -5,6 +5,8 @@ export const environment = {
     apiUrlPost: '',
 
     // apiUrl: 'https://5624575b4a82.ngrok-free.app', // Thay đổi URL API theo backend của bạn
+
     apiGatWay: 'http://localhost:5000' // đã có apiUrlTravelPlace, apiUrlPost
+    apiChatbot: 'https://bea63d851a55.ngrok-free.app'
 
 };

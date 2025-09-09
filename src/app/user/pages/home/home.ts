@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ChatbotService, ChatMessage } from './chatbot.service';
 
 type Destination = {
   id: number;
@@ -35,6 +36,13 @@ type Itinerary = {
 })
 export class Home {
   query = '';
+  // Chatbot state
+  chatOpen = false;
+  chatInput = '';
+  isSending = false;
+  chatMessages: ChatMessage[] = [
+    { role: 'assistant', content: 'Xin chào! Tôi có thể giúp gì cho chuyến đi của bạn hôm nay?' }
+  ];
   destinations: Destination[] = [
     {
       id: 1,
@@ -139,5 +147,33 @@ export class Home {
   onSearch() {
     // TODO: gọi API tìm kiếm hoặc điều hướng
     console.log('Searching for:', this.query);
+  }
+
+  constructor(private chatbot: ChatbotService) { }
+
+  toggleChat() {
+    this.chatOpen = !this.chatOpen;
+  }
+
+  sendChat() {
+    const prompt = (this.chatInput || '').trim();
+    if (!prompt || this.isSending) return;
+
+    this.chatMessages.push({ role: 'user', content: prompt });
+    this.chatInput = '';
+    this.isSending = true;
+
+    this.chatbot.sendMessage(prompt).subscribe({
+      next: (res) => {
+        const reply = res?.reply || 'Xin lỗi, hiện tôi chưa có phản hồi.';
+        this.chatMessages.push({ role: 'assistant', content: reply });
+      },
+      error: () => {
+        this.chatMessages.push({ role: 'assistant', content: 'Có lỗi khi gọi API. Vui lòng thử lại sau.' });
+      },
+      complete: () => {
+        this.isSending = false;
+      }
+    });
   }
 }
