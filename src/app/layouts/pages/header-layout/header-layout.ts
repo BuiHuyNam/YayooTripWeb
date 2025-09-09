@@ -45,6 +45,7 @@ export class HeaderLayout implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('login');
+    localStorage.removeItem('email');
     this.login = false;
   }
 

@@ -109,6 +109,7 @@ export class AuthService {
         if (this.isBrowser) {
             localStorage.removeItem(this.TOKEN_KEY);
             localStorage.removeItem(this.USER_KEY);
+
         }
         this.currentUserSubject.next(null);
     }

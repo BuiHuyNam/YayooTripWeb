@@ -58,6 +58,7 @@ export class Login {
         console.log('Login successful:', response);
         this.isLoading = false;
         localStorage.setItem('login', response.token);
+        localStorage.setItem('email', this.formData.email);
         console.log(localStorage.getItem('login'))
         // Redirect to home page or dashboard after successful login
         const role = this.authService.getRoles();
