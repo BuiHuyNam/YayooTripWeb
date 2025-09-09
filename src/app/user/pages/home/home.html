@@ -441,3 +441,36 @@
     </div>
   </div>
 </footer>
+<!-- Floating Chatbot -->
+<div class="fixed bottom-6 right-6 z-50">
+  <div class="relative" [ngClass]="{ 'hidden': !chatOpen }">
+    <div class="w-[320px] h-[440px] rounded-xl shadow-xl border bg-white flex flex-col overflow-hidden">
+      <div class="px-4 py-3 border-b bg-primary-600 text-white flex items-center justify-between">
+        <div class="font-semibold">Yayoo Assistant</div>
+        <button type="button" class="text-white/90 hover:text-white" (click)="toggleChat()">✕</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+        <div *ngFor="let m of chatMessages" class="flex"
+          [ngClass]="m.role === 'user' ? 'justify-end' : 'justify-start'">
+          <div class="max-w-[80%] rounded-lg px-3 py-2 text-sm"
+            [ngClass]="m.role === 'user' ? 'bg-primary-600 text-white' : 'bg-white border'">
+            {{ m.content }}
+          </div>
+        </div>
+        <div *ngIf="isSending" class="text-xs text-gray-500">Đang trả lời...</div>
+      </div>
+      <form class="p-3 border-t bg-white flex items-center gap-2" (ngSubmit)="sendChat()">
+        <input type="text" [(ngModel)]="chatInput" name="chatInput" placeholder="Hỏi tôi về địa điểm, lịch trình..."
+          class="flex-1 h-10 rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        <button type="submit" [disabled]="!chatInput || isSending"
+          class="h-10 px-4 rounded-md bg-primary-600 text-white text-sm disabled:opacity-50">Gửi</button>
+      </form>
+    </div>
+  </div>
+
+  <button type="button" (click)="toggleChat()"
+    class="rounded-full h-14 w-14 shadow-lg bg-primary-600 text-white grid place-items-center hover:bg-primary-700"
+    [ngClass]="{ 'hidden': chatOpen }" aria-label="Mở chatbot">
+    💬
+  </button>
+</div>

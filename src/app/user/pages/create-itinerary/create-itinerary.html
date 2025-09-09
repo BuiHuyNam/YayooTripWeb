@@ -99,9 +99,9 @@
                             </tr>
 
                             <tr *ngFor="let it of items"
-                                (click)="selectedItemId = (it.travelId || it.accomodationId) || null"
+                                (click)="selectedItemId = (it.travelPlaceId || it.accomodationId) || null"
                                 [class]="cn('border-t border-slate-200 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-amber-50 cursor-pointer transition-all',
-                               selectedItemId === (it.travelId || it.accomodationId) && 'bg-gradient-to-r from-cyan-100 to-amber-100 border-cyan-300')">
+                               selectedItemId === (it.travelPlaceId || it.accomodationId) && 'bg-gradient-to-r from-cyan-100 to-amber-100 border-cyan-300')">
                                 <td class="px-4 py-3">
                                     <span [class]="cn('inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold',
                                 it.kind === 'destination'
@@ -117,27 +117,27 @@
                                     <input type="datetime-local"
                                         class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
                                         [ngModel]="it.startTime"
-                                        (ngModelChange)="updateStartTime((it.travelId || it.accomodationId)!, $event)" />
+                                        (ngModelChange)="updateStartTime((it.travelPlaceId || it.accomodationId)!, $event)" />
                                 </td>
 
                                 <td class="px-4 py-3">
                                     <input type="datetime-local"
                                         class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
                                         [ngModel]="it.endTime"
-                                        (ngModelChange)="updateEndTime((it.travelId || it.accomodationId)!, $event)" />
+                                        (ngModelChange)="updateEndTime((it.travelPlaceId || it.accomodationId)!, $event)" />
                                 </td>
 
                                 <td class="px-4 py-3">
                                     <input type="number" min="0"
                                         class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
                                         [ngModel]="it.estimatedCost"
-                                        (ngModelChange)="updateEstimatedCost((it.travelId || it.accomodationId)!, $event)" />
+                                        (ngModelChange)="updateEstimatedCost((it.travelPlaceId || it.accomodationId)!, $event)" />
                                 </td>
 
                                 <td class="px-4 py-3 text-right">
                                     <button
                                         class="px-3 py-1 rounded-lg hover:bg-red-100 text-red-600 font-medium transition-colors"
-                                        (click)="$event.stopPropagation(); removeItem((it.travelId || it.accomodationId)!)">
+                                        (click)="$event.stopPropagation(); removeItem((it.travelPlaceId || it.accomodationId)!)">
                                         🗑️ Xóa
                                     </button>
                                 </td>
@@ -236,17 +236,17 @@
                                         <td class="px-3 py-2">
                                             <input type="datetime-local" class="w-full rounded border px-1 py-1 text-xs"
                                                 [ngModel]="att.startTime || ''"
-                                                (ngModelChange)="updateAttachedServiceStartTime((selectedItem!.travelId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                (ngModelChange)="updateAttachedServiceStartTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
                                         </td>
                                         <td class="px-3 py-2">
                                             <input type="datetime-local" class="w-full rounded border px-1 py-1 text-xs"
                                                 [ngModel]="att.endTime || ''"
-                                                (ngModelChange)="updateAttachedServiceEndTime((selectedItem!.travelId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                (ngModelChange)="updateAttachedServiceEndTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
                                         </td>
                                         <td class="px-3 py-2">
                                             <input type="number" min="0" class="w-full rounded border px-1 py-1 text-xs"
                                                 [ngModel]="att.estimatedCost || ''"
-                                                (ngModelChange)="updateAttachedServiceEstimatedCost((selectedItem!.travelId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                (ngModelChange)="updateAttachedServiceEstimatedCost((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
                                         </td>
                                         <td class="px-3 py-2 text-right">
                                             <button class="px-2 py-1 rounded hover:bg-red-100 text-red-600 text-xs"
