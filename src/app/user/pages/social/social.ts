@@ -122,7 +122,7 @@ export class Social implements OnInit, OnDestroy {
     tags: [],
     photos: photoList,
     trip: { title: p.title || 'Chia sẻ hành trình', meta: '' },
-    stats: {  likes: (p as any).likeCount ?? 0, comments: 0, shares: 0, saves: 0 },
+    stats: {  likes: (p as any).likeCount ?? 0, comments: (p as any).totalComment, shares: 0, saves: 0 },
     liked: false,
     saved: false
   };
