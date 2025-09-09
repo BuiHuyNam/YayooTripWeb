@@ -40,8 +40,8 @@ export interface LocationItem {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   // 🔑 lấy base URL từ environment
-  private readonly API_BASE_URL = environment.apiUrlTravelPlace; 
-  private readonly ENDPOINT = '/TravelPlace';   // 👉 backend route, đổi cho đúng
+  private readonly API_BASE_URL = environment.apiGatWay; 
+  private readonly ENDPOINT = '/api/travelplace';   // 👉 backend route, đổi cho đúng
 
   private readonly DEFAULT_THUMBNAIL = '/assets/images/sample-placeholder.jpg';
 
