@@ -1,6 +1,7 @@
 <div class="max-w-5xl mx-auto bg-background border rounded-2xl shadow-sm overflow-hidden">
   <div class="relative h-80 bg-muted">
-    <img [src]="location?.thumbnailUrl || '/assets/images/sample-placeholder.jpg'"
+    <img [src]="imgSrc"
+     referrerpolicy="no-referrer" 
          (error)="onImgError($event)" [alt]="location?.name || 'Địa điểm'"
          class="h-full w-full object-cover" />
     <span *ngIf="location?.rating != null"

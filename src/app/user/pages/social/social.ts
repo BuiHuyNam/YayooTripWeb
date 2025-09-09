@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Post as CardPost, PostCardComponent } from '../../components/post-card';
-import { SocialService, Post as ServicePost } from '../../social.service';
+import { SocialService, Post as ServicePost, Post } from '../../social.service';
 import { FormsModule } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
 
@@ -122,7 +122,7 @@ export class Social implements OnInit, OnDestroy {
     tags: [],
     photos: photoList,
     trip: { title: p.title || 'Chia sẻ hành trình', meta: '' },
-    stats: { likes: 0, comments: 0, shares: 0, saves: 0 },
+    stats: {  likes: (p as any).likeCount ?? 0, comments: 0, shares: 0, saves: 0 },
     liked: false,
     saved: false
   };
@@ -150,7 +150,23 @@ export class Social implements OnInit, OnDestroy {
   trackByPostId(_: number, p: CardPost) { return p.id; }
 
   onSave(ev: any) { console.log('Save', ev); }
-  onLike(ev: any) { console.log('Like', ev); }
+  onLike(card: CardPost) {
+    this.socialService.addReaction(card.id, 'Like').subscribe({
+      next: () => {
+        // UI đã tăng/giảm lạc quan trong child rồi (toggleLike), không cộng ở đây nữa
+        // Nếu muốn rollback khi lỗi thì xử lý trong error
+      },
+      error: err => {
+        console.error('addReaction error:', err);
+        // rollback lạc quan nếu cần
+        if (card.liked && card.stats) {
+          card.liked = false;
+          card.stats.likes = Math.max(0, card.stats.likes - 1);
+        }
+      }
+    });
+  }
+
 
   onPreviewErr(e: Event) {
     const img = e.target as HTMLImageElement;

@@ -16,25 +16,30 @@ export class LocationDetail implements OnChanges {
 
   loading = false;
   errorMsg = '';
+  readonly PLACEHOLDER = '/assets/images/sample-placeholder.jpg'; // [THÊM]
+  imgSrc = this.PLACEHOLDER;                                      // [THÊM]
+  private usedFallback = false;   
 
   private user = inject(UserService);
   private route = inject(ActivatedRoute);
 
   ngOnChanges(_: SimpleChanges) {
-    // có location sẵn thì không cần gọi lại
-    if (this.location) return;
-
+    if (this.location) {                                          // [SỬA]
+      this.syncImgSrc();
+      return;
+    }
     const id = this.id ?? this.route.snapshot.paramMap.get('id') ?? undefined;
     if (!id) return;
 
     this.loading = true;
     this.user.getLocationById(id).subscribe({
-      next: (loc) => {
+      next: loc => {
         this.location = loc ?? undefined;
+        this.syncImgSrc();                                        // [THÊM]
         this.loading = false;
         if (!loc) this.errorMsg = 'Không tìm thấy địa điểm.';
       },
-      error: (err) => {
+      error: err => {
         console.error(err);
         this.errorMsg = 'Không thể tải chi tiết địa điểm.';
         this.loading = false;
@@ -42,7 +47,38 @@ export class LocationDetail implements OnChanges {
     });
   }
 
-  onImgError(ev: Event) {
-    (ev.target as HTMLImageElement).src = 'assets/da-lat-flower-gardens-pine-forests-vietnam.png';
+  ngOnInit(): void {                                              // [THÊM] theo dõi param id nếu đi qua router
+    if (!this.id && !this.location) {
+      this.route.paramMap.subscribe(pm => {
+        const rid = pm.get('id');
+        if (!rid) return;
+        this.loading = true;
+        this.user.getLocationById(rid).subscribe({
+          next: loc => {
+            this.location = loc ?? undefined;
+            this.syncImgSrc();                                    // [THÊM]
+            this.loading = false;
+            if (!loc) this.errorMsg = 'Không tìm thấy địa điểm.';
+          },
+          error: err => {
+            console.error(err);
+            this.errorMsg = 'Không thể tải chi tiết địa điểm.';
+            this.loading = false;
+          }
+        });
+      });
+    }
+  }
+    private syncImgSrc() {                                          // [THÊM]
+    this.usedFallback = false;
+    const u = (this.location?.urlImage || '').trim();             // [SỬA] dùng urlImage
+    this.imgSrc = u || this.PLACEHOLDER;
+  }
+
+ onImgError(e: Event) {                                          // [SỬA]
+    if (this.usedFallback) return;
+    this.usedFallback = true;
+    (e.target as HTMLImageElement).onerror = null;
+    this.imgSrc = this.PLACEHOLDER;
   }
 }

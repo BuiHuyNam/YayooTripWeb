@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // export interface LocationItem {
@@ -26,7 +26,7 @@ export interface LocationItem {
   description?: string;
 
   // tuỳ chọn cho UI
-  thumbnailUrl?: string;
+  urlImage?: string;
   categoryId?: string;
   categoryName?: string;
   price?: number;
@@ -68,7 +68,23 @@ export class LocationCardComponent {
     return total > 3 ? total - 3 : 0;
     }
 
+     readonly PLACEHOLDER = '/assets/images/sample-placeholder.jpg';
+  imgSrc = this.PLACEHOLDER;
+  private usedFallback = false;
+
+    ngOnChanges(changes: SimpleChanges): void {
+    if (changes['location']) {
+      this.usedFallback = false;
+      const u = (this.location?.urlImage || '').trim();
+      this.imgSrc = u || this.PLACEHOLDER;     // ⬅️ không bind trực tiếp location.urlImage trong HTML
+    }
+  }
+
   onImgError(ev: Event) {
-    (ev.target as HTMLImageElement).src = 'assets/da-lat-flower-gardens-pine-forests-vietnam.png';
+    if (this.usedFallback) return;             // ⬅️ chỉ fallback 1 lần để tránh vòng lặp
+    this.usedFallback = true;
+    const img = ev.target as HTMLImageElement;
+    img.onerror = null;
+    this.imgSrc = this.PLACEHOLDER;
   }
 }
