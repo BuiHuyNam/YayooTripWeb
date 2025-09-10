@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular
 import { FormsModule } from '@angular/forms';
 import { CommentItem, CommentsService } from '../comments.service';
 import { Post as CardPost} from './post-card';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-comments-modal',
@@ -101,6 +102,7 @@ export class CommentsModalComponent implements OnInit {
   sending = false;
 
   private api = inject(CommentsService);
+  constructor(private zone: NgZone, private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
   const id = (this.postId || '').trim();      // [THÊM] chặn id rỗng/sai
@@ -108,7 +110,11 @@ export class CommentsModalComponent implements OnInit {
 
     this.loading = true;
     this.api.getComments(this.post.id).subscribe({
-      next: (list) => { this.comments = list; this.loading = false; queueMicrotask(this.scrollToBottom); },
+      next: (list) => { 
+         this.zone.run(() => { 
+        this.comments = list; this.loading = false; queueMicrotask(this.scrollToBottom);
+       this.cdr.detectChanges();})
+       },
       error: () => { this.loading = false; }
     });
   }
@@ -121,10 +127,13 @@ export class CommentsModalComponent implements OnInit {
     this.sending = true;
     this.api.addComment(this.post.id, content).subscribe({
       next: (c) => {
+        this.zone.run(() => { 
         this.comments.push(c);
         this.draft = '';
         this.sending = false;
         this.scrollToBottom();
+        this.cdr.detectChanges();
+        })
       },
       error: () => { this.sending = false; }
     });

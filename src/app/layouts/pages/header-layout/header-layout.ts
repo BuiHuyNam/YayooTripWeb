@@ -47,6 +47,8 @@ export class HeaderLayout implements OnInit {
     localStorage.removeItem('login');
     localStorage.removeItem('email');
     this.login = false;
+    this.router.navigate(['/home']);
+    
   }
 
   // Đóng menu khi click ra ngoài
