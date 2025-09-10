@@ -134,7 +134,8 @@ export interface Post {
       {{ post.stats?.likes || 0 }}
     </button>
 
-    <button type="button" class="inline-flex items-center gap-1">
+    <button type="button" class="inline-flex items-center gap-1"
+       (click)="openComments()" >
       <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
       </svg>
@@ -191,6 +192,13 @@ onPhotoErr(e: Event) {
   img.onerror = null; // ngắt onerror trước khi đổi src
   img.src = '/assets/images/sample-placeholder.jpg';
 }
+
+@Output() comment = new EventEmitter<Post>(); // thêm
+
+openComments() {                               // thêm
+  this.comment.emit(this.post);
+}
+
 
 
 

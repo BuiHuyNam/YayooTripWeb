@@ -14,8 +14,16 @@
 
   <!-- Feed -->
   <div class="mt-6 space-y-6 ">
-    <app-post-card *ngFor="let post of posts" [post]="post" (save)="onSave($event)" (like)="onLike($event)">
+    <app-post-card *ngFor="let post of posts" [post]="post" (save)="onSave($event)" (like)="onLike($event)"  (comment)="openComments($event)">
     </app-post-card>
+
+    <!-- ⬇️ NHÚNG MODAL  -->
+  <app-comments-modal
+    *ngIf="isCommentsOpen && commentsPost"
+    [post]="commentsPost"
+    [postId]="commentsPostId" 
+    (close)="closeComments()">
+  </app-comments-modal>
   </div>
 </div>
 

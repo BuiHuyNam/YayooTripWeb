@@ -19,6 +19,7 @@ export interface ApiPostDto {
   userId: string;
   images?: string[];
   reactionSummary?: ApiReactionSummary[];
+  totalComment: number;
 }
 
 export interface Post {
@@ -30,6 +31,7 @@ export interface Post {
   createdAt: Date;
   userId: string;
   likeCount: number;
+  totalComment: number;
 }
 
 export interface CreatePostRequest {
@@ -143,7 +145,8 @@ uploadImage(file: File): Observable<{ url: string }> {
       authorName: dto.createBy,
       createdAt: new Date(dto.createdAt),
       userId: dto.userId,
-      likeCount: dto.reactionSummary?.find(r => r.reactionType === 'Like')?.count || 0
+      likeCount: dto.reactionSummary?.find(r => r.reactionType === 'Like')?.count || 0,
+      totalComment: dto.totalComment
     };
   }
 }
