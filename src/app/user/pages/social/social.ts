@@ -5,6 +5,7 @@ import { SocialService, Post as ServicePost, Post } from '../../social.service';
 import { FormsModule } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
 import { CommentsModalComponent } from '../../components/comments-modal.component';
+import Swal from 'sweetalert2';
 
 type Privacy = 'public' | 'friends' | 'private';
 
@@ -246,14 +247,15 @@ export class Social implements OnInit, OnDestroy {
       this.posts = [card, ...this.posts];
 
       // 5) Reset form + preview + đóng modal
-      // this.newPost = { title: '', content: '', postImg: '' };
-      // this.previewUrls.forEach(u => URL.revokeObjectURL(u));
-      // this.previewUrls = [];
-      // this.selectedFiles = [];
+     
 
-      this.closeComposer();
    
-      setTimeout(() => alert('Đăng bài thành công!'), 0);
+     Swal.fire({ title: 'Đăng bài thành công!', icon: 'success', timer: 10000 });
+      this.newPost = { title: '', content: '', postImg: '' };
+      this.previewUrls.forEach(u => URL.revokeObjectURL(u));
+      this.previewUrls = [];
+      this.selectedFiles = [];
+     this.closeComposer();
     } catch (err) {
       console.error('Create post failed:', err);
       alert('Đăng bài thất bại. Vui lòng thử lại!');
