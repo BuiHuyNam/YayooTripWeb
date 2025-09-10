@@ -109,7 +109,7 @@ export class Profile {
       name: this.user?.name || '',
       email: this.user?.email || '',
       phone: this.user?.phone || '',
-      password: localStorage.getItem('password') || '',
+      password: this.user?.password || '',
       avartaImage: this.user?.avartaImage || '',
       roleName: this.user?.roleName || 'User',
     };
@@ -138,7 +138,7 @@ export class Profile {
   ngOnInit() {
     this.loadUserData();
     console.log(this.authService.getUserIdFromToken());
-    console.log(localStorage.getItem('password'));
+    console.log(this.user?.password);
   }
 
   loadUserData() {
@@ -257,7 +257,7 @@ export class Profile {
       name: this.editModel.name?.trim() || '',
       email: this.editModel.email?.trim() || '',
       phone: this.editModel.phone?.trim() || '',
-      password: localStorage.getItem('password') || '',
+      password: this.editModel.password?.trim() || '',
       avartaImage: this.editModel.avartaImage || '',
       roleName: this.editModel.roleName || 'User',
     };
@@ -266,7 +266,7 @@ export class Profile {
     this.profileService.updateUser(userId, payload).subscribe({
       next: (user: User) => {
         this.user = user;
-        // localStorage.setItem('password', payload.password || '');
+        localStorage.setItem('password', payload.password || '');
         this.loadUserData();
         Swal.fire({
           title: 'Thành công',

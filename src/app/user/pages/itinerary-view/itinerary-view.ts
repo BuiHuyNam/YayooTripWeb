@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { Router } from 'express';
 import { ItineraryService } from '../shared/itinerary.service';
 import { ItineraryDetailDto, ItineraryViewService } from './itinerary-view.service';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
+
 
 type ItemKind = 'destination' | 'service';
 
@@ -61,7 +63,9 @@ export class ItineraryView implements OnInit {
     private ar: ActivatedRoute,
     private router: Router,
     private itinerarySrv: ItineraryService,
-    private itineraryViewSrv: ItineraryViewService
+    private itineraryViewSrv: ItineraryViewService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -151,31 +155,37 @@ export class ItineraryView implements OnInit {
     // Fetch real detail by id
     this.itineraryViewSrv.getById(id).subscribe({
       next: (detail) => {
-        this.detail = detail;
-        // Map API detail into timeline groups UI
-        this.groups = this.mapDetailToGroups(detail);
-        // Date range header: fallback to created date if available
-        this.dateRange = detail.created ? (new Date(detail.created)).toLocaleDateString() : this.dateRange;
-        // Compute total cost from items and attached services if any cost fields exist
-        this.totalCost = this.groups
-          .flatMap((g: any) => g.items)
-          .reduce((sum: number, item: any) => sum
-            + (item.cost || 0)
-            + (item.attachedServices?.reduce((a: number, s: any) => a + (s.estimatedCost || 0), 0) || 0), 0);
-        // Open first group by default
-        this.groups.forEach((g: any, i: number) => this.opened[g.id] = i === 0);
+        this.zone.run(() => {
+          this.detail = detail;
+          // Map API detail into timeline groups UI
+          this.groups = this.mapDetailToGroups(detail);
+          // Date range header: fallback to created date if available
+          this.dateRange = detail.created ? (new Date(detail.created)).toLocaleDateString() : this.dateRange;
+          // Compute total cost from items and attached services if any cost fields exist
+          this.totalCost = this.groups
+            .flatMap((g: any) => g.items)
+            .reduce((sum: number, item: any) => sum
+              + (item.cost || 0)
+              + (item.attachedServices?.reduce((a: number, s: any) => a + (s.estimatedCost || 0), 0) || 0), 0);
+          // Open first group by default
+          this.groups.forEach((g: any, i: number) => this.opened[g.id] = i === 0);
+          this.cdr.detectChanges();
+        })
       },
       error: () => {
         // fallback to mock if API fails
-        const it = this.itinerarySrv.getById(id);
-        if (!it) { this.router.navigateByUrl('/'); return; }
-        this.dateRange = it.duration;
-        this.groups = this.buildDemoGroupsFor(id);
-        this.totalCost = this.groups
-          .flatMap(g => g.items)
-          .reduce((s: number, item: any) =>
-            s + (item.cost || 0) + (item.attachedServices?.reduce((a: number, b: any) => a + (b.estimatedCost || 0), 0) || 0), 0);
-        this.groups.forEach((g, i) => this.opened[g.id] = i === 0);
+        this.zone.run(() => {
+          const it = this.itinerarySrv.getById(id);
+          if (!it) { this.router.navigateByUrl('/'); return; }
+          this.dateRange = it.duration;
+          this.groups = this.buildDemoGroupsFor(id);
+          this.totalCost = this.groups
+            .flatMap(g => g.items)
+            .reduce((s: number, item: any) =>
+              s + (item.cost || 0) + (item.attachedServices?.reduce((a: number, b: any) => a + (b.estimatedCost || 0), 0) || 0), 0);
+          this.groups.forEach((g, i) => this.opened[g.id] = i === 0);
+          this.cdr.detectChanges();
+        })
       }
     });
   }
