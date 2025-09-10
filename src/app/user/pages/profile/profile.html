@@ -22,7 +22,7 @@
             </div>
 
             <!-- Info -->
-            <div class="flex-1 space-y-3">
+            <!-- <div class="flex-1 space-y-3">
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-2xl font-bold">{{ mockUser.name }}</h1>
@@ -37,6 +37,26 @@
                 <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                     <div>📍 {{ mockUser.location }}</div>
                     <div>📅 {{ mockUser.joinDate }}</div>
+                </div>
+            </div> -->
+            <div class="flex-1 space-y-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-bold">{{ user?.name || 'Chưa có tên' }}</h1>
+                        <span *ngIf="user?.roleName === 'Admin' || user?.roleName === 'User'"
+                            class="px-2 py-0.5 rounded-full text-xs bg-sky-100 text-sky-600">Verified</span>
+                    </div>
+                    <p class="text-gray-500">@{{ getUsername() }}</p>
+                </div>
+                <p class="text-sm leading-relaxed max-w-2xl">
+                    Xin chào! Tôi là {{ user?.name || 'người dùng' }}.
+                    <span *ngIf="user?.email">Email: {{ user?.email }}</span>
+                    <span *ngIf="user?.phone"> | SĐT: {{ user?.phone }}</span>
+                </p>
+                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div *ngIf="user?.email">📧 {{ user?.email }}</div>
+                    <div *ngIf="user?.phone">📱 {{ user?.phone }}</div>
+                    <div *ngIf="user?.roleName">👤 {{ user?.roleName }}</div>
                 </div>
             </div>
 
@@ -93,15 +113,15 @@
     <!-- Tabs -->
     <div class="rounded-2xl border bg-white p-6 shadow">
         <div class="grid grid-cols-4 gap-2 mb-6">
-            <button (click)="activeTab='posts'" [class.bg-sky-600]="activeTab==='posts'"
+            <button (click)="onTabChange('posts')" [class.bg-sky-600]="activeTab==='posts'"
                 [class.text-white]="activeTab==='posts'" class="px-3 py-2 rounded-lg border text-sm">Bài viết</button>
-            <button (click)="activeTab='itineraries'" [class.bg-sky-600]="activeTab==='itineraries'"
+            <button (click)="onTabChange('itineraries')" [class.bg-sky-600]="activeTab==='itineraries'"
                 [class.text-white]="activeTab==='itineraries'" class="px-3 py-2 rounded-lg border text-sm">Lịch
                 trình</button>
-            <button (click)="activeTab='followers'" [class.bg-sky-600]="activeTab==='followers'"
+            <button (click)="onTabChange('followers')" [class.bg-sky-600]="activeTab==='followers'"
                 [class.text-white]="activeTab==='followers'" class="px-3 py-2 rounded-lg border text-sm">Người theo
                 dõi</button>
-            <button (click)="activeTab='following'" [class.bg-sky-600]="activeTab==='following'"
+            <button (click)="onTabChange('following')" [class.bg-sky-600]="activeTab==='following'"
                 [class.text-white]="activeTab==='following'" class="px-3 py-2 rounded-lg border text-sm">Đang theo
                 dõi</button>
         </div>
@@ -170,89 +190,121 @@
 
 
         <!-- Itineraries -->
-        <div *ngIf="activeTab==='itineraries'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <article *ngFor="let it of mockItineraries"
-                class="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <!-- Cover -->
-                <div class="relative">
-                    <img [src]="it.image" alt="{{it.title}}" class="w-full h-48 object-cover">
-                    <!-- Badge công khai -->
-                    <span class="absolute top-3 right-3 inline-flex items-center gap-1.5
-                   px-3 py-1 rounded-lg text-xs font-semibold
-                   bg-cyan-600 text-white shadow">
-                        Công khai
-                    </span>
+        <div *ngIf="activeTab==='itineraries'">
+            <!-- Loading State -->
+            <div *ngIf="schedulesLoading" class="flex justify-center items-center py-20">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600 mx-auto mb-4"></div>
+                    <p class="text-gray-500">Đang tải lịch trình...</p>
                 </div>
+            </div>
 
-                <!-- Body -->
-                <div class="p-5">
-                    <h3 class="text-lg font-semibold text-slate-900 mb-1 group-hover:text-cyan-700 line-clamp-1">
-                        {{ it.title }}
-                    </h3>
-                    <p class="text-sm text-slate-600 mb-3 line-clamp-2">
-                        {{ it.description }}
-                    </p>
+            <!-- Error State -->
+            <div *ngIf="schedulesError && !schedulesLoading" class="text-center py-20">
+                <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Không thể tải lịch trình</h3>
+                <p class="text-gray-500 mb-4">Có lỗi xảy ra khi tải dữ liệu lịch trình</p>
+                <button (click)="loadSchedules()"
+                    class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors">
+                    Thử lại
+                </button>
+            </div>
 
-                    <!-- Duration & Budget -->
-                    <div class="flex items-center gap-5 text-sm text-slate-700">
-                        <div class="inline-flex items-center gap-2">
-                            <span
-                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">⏱</span>
-                            <span>{{ it.duration }}</span>
-                        </div>
-                        <div class="inline-flex items-center gap-2">
-                            <span
-                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">💲</span>
-                            <span>{{ it.budget }}</span>
-                        </div>
-                    </div>
+            <!-- Empty State -->
+            <div *ngIf="!schedulesLoading && !schedulesError && schedules.length === 0" class="text-center py-20">
+                <div class="text-gray-400 text-6xl mb-4">🗺️</div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Chưa có lịch trình nào</h3>
+                <p class="text-gray-500">Bạn chưa tạo lịch trình du lịch nào</p>
+            </div>
 
-                    <!-- Stats row -->
-                    <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
-                        <div class="flex items-center gap-5">
-                            <span class="inline-flex items-center gap-1">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
-                                </svg>
-                                {{ it.views || 0 }}
-                            </span>
-                            <span class="inline-flex items-center gap-1">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 016.5 4c1.74 0 3.41.81 4.5 2.09A5.62 5.62 0 0115.5 4 4.5 4.5 0 0120 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </svg>
-                                {{ it.likes || 0 }}
-                            </span>
-                            <span class="inline-flex items-center gap-1">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
-                                </svg>
-                                {{ it.comments || 0 }}
-                            </span>
-                        </div>
-                        <span class="whitespace-nowrap">
-                            {{ it.createdAt | date:'dd/MM/yyyy' }}
+            <!-- Schedules Grid -->
+            <div *ngIf="!schedulesLoading && !schedulesError && schedules.length > 0"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <article *ngFor="let schedule of schedules"
+                    class="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Cover -->
+                    <div class="relative">
+                        <img [src]="getScheduleImage(schedule)" alt="{{schedule.name}}"
+                            class="w-full h-48 object-cover">
+                        <!-- Badge status -->
+                        <span class="absolute top-3 right-3 inline-flex items-center gap-1.5
+                       px-3 py-1 rounded-lg text-xs font-semibold
+                       bg-cyan-600 text-white shadow">
+                            {{ getStatusText(schedule.status) }}
                         </span>
                     </div>
 
-                    <!-- Actions -->
-                    <div class="mt-4 flex items-center justify-between pt-4 border-t">
-                        <div class="flex items-center gap-4 text-sm">
-                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
-                                <span>👍</span> Thích
-                            </button>
-                            <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
-                                <span>🔖</span> Lưu
+                    <!-- Body -->
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-1 group-hover:text-cyan-700 line-clamp-1">
+                            {{ schedule.name }}
+                        </h3>
+                        <p class="text-sm text-slate-600 mb-3 line-clamp-2">
+                            {{ schedule.description || 'Không có mô tả' }}
+                        </p>
+
+                        <!-- Duration & Items Count -->
+                        <div class="flex items-center gap-5 text-sm text-slate-700">
+                            <div class="inline-flex items-center gap-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">📅</span>
+                                <span>{{ schedule.items.length || 0 }} địa điểm</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">🏷️</span>
+                                <span>{{ schedule.type || 'Lịch trình' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Stats row -->
+                        <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+                            <div class="flex items-center gap-5">
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+                                    </svg>
+                                    {{ schedule.items.length || 0 }}
+                                </span>
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 016.5 4c1.74 0 3.41.81 4.5 2.09A5.62 5.62 0 0115.5 4 4.5 4.5 0 0120 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                    0
+                                </span>
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
+                                    </svg>
+                                    0
+                                </span>
+                            </div>
+                            <span class="whitespace-nowrap">
+                                {{ schedule.created | date:'dd/MM/yyyy' }}
+                            </span>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-4 flex items-center justify-between pt-4 border-t">
+                            <div class="flex items-center gap-4 text-sm">
+                                <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                    <span>👍</span> Thích
+                                </button>
+                                <button class="inline-flex items-center gap-1 text-slate-600 hover:text-cyan-700">
+                                    <span>🔖</span> Lưu
+                                </button>
+                            </div>
+                            <button class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700
+                           hover:border-cyan-600 hover:text-cyan-700 font-medium"
+                                [routerLink]="['/itineraries', schedule.id]">
+                                Xem chi tiết
                             </button>
                         </div>
-                        <button class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700
-                       hover:border-cyan-600 hover:text-cyan-700 font-medium" [routerLink]="['/itineraries', it.id]">
-                            Xem chi tiết
-                        </button>
                     </div>
-                </div>
-            </article>
+                </article>
+            </div>
         </div>
 
         <!-- Followers -->
@@ -383,28 +435,6 @@
 
         <!-- Body -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <!-- Cover -->
-            <label class="font-medium text-gray-700 md:col-span-2">
-                Ảnh bìa (URL)
-                <input [(ngModel)]="editModel.coverImage"
-                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
-                    placeholder="https://..." />
-                <img *ngIf="editModel.coverImage" [src]="editModel.coverImage"
-                    class="mt-2 h-24 w-full object-cover rounded-md border" />
-            </label>
-
-            <!-- Avatar -->
-            <label class="font-medium text-gray-700">
-                Ảnh đại diện (URL)
-                <input [(ngModel)]="editModel.avatar"
-                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
-                    placeholder="https://..." />
-                <div class="mt-2">
-                    <img *ngIf="editModel.avatar" [src]="editModel.avatar"
-                        class="h-16 w-16 rounded-full object-cover border" />
-                </div>
-            </label>
-
             <!-- Name -->
             <label class="font-medium text-gray-700">
                 Họ và tên
@@ -413,44 +443,58 @@
                     placeholder="Nhập họ tên" />
             </label>
 
-            <!-- Username -->
-            <label class="font-medium text-gray-700 md:col-span-2">
-                Username
-                <input [(ngModel)]="editModel.username"
+            <!-- Email -->
+            <label class="font-medium text-gray-700">
+                Email
+                <input [(ngModel)]="editModel.email" type="email"
                     class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
-                    placeholder="@username" />
+                    placeholder="email@domain.com" />
             </label>
 
-            <!-- Bio -->
-            <label class="font-medium text-gray-700 md:col-span-2">
-                Giới thiệu
-                <textarea rows="3" [(ngModel)]="editModel.bio"
+            <!-- Phone -->
+            <label class="font-medium text-gray-700">
+                Số điện thoại
+                <input [(ngModel)]="editModel.phone"
                     class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
-                    placeholder="Mô tả ngắn về bạn..."></textarea>
+                    placeholder="Nhập số điện thoại" />
+
             </label>
 
-            <!-- Location -->
-            <label class="font-medium text-gray-700 md:col-span-2">
-                Vị trí (Thành phố, Quốc gia)
-                <input [(ngModel)]="editModel.location"
+            <!-- Password -->
+            <label class="font-medium text-gray-700">
+                Mật khẩu
+                <input [(ngModel)]="editModel.password" type="password"
                     class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500"
-                    placeholder="Ví dụ: Hà Nội, Việt Nam" />
+                    placeholder="" />
             </label>
 
-            <!-- Verified -->
-            <div class="md:col-span-2">
-                <label class="inline-flex items-center gap-2">
-                    <input type="checkbox" [(ngModel)]="editModel.verified" class="h-4 w-4">
-                    <span class="text-gray-700">Đánh dấu tài khoản Verified</span>
-                </label>
-            </div>
+            <!-- Avatar Upload -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Ảnh đại diện
+                <div class="mt-1 flex items-center gap-3">
+                    <img *ngIf="editModel.avartaImage" [src]="editModel.avartaImage"
+                        class="h-16 w-16 rounded-full object-cover border" />
+                    <input type="file" accept="image/*" (change)="onAvatarSelected($event)"
+                        class="w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500" />
+                </div>
+            </label>
+
+            <!-- Role Name -->
+            <label class="font-medium text-gray-700 md:col-span-2">
+                Quyền (role)
+                <select [(ngModel)]="editModel.roleName"
+                    class="mt-1 w-full rounded-lg border-2 border-gray-200 px-3 py-2 focus:border-sky-500">
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </label>
         </div>
 
         <!-- Footer -->
         <div class="mt-5 flex justify-end gap-2">
             <button class="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm" (click)="closeEdit()">Hủy</button>
             <button class="px-3 py-2 rounded-lg text-white bg-sky-600 hover:bg-sky-700 text-sm"
-                (click)="saveEdit()">Lưu</button>
+                (click)="updateUser()">Lưu</button>
         </div>
     </div>
 </div>

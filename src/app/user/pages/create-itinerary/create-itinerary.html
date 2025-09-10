@@ -1,32 +1,33 @@
-<div class="min-h-screen bg-gradient-to-br from-cyan-50 to-amber-50">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
     <!-- Header -->
     <div class="sticky top-0 z-10 border-b bg-white/95 backdrop-blur-sm shadow-sm">
-        <div class="mx-auto max-w-7xl px-4 py-4 flex items-center gap-3">
-            <div class="text-2xl font-bold text-slate-800">
-                <a routerLink="/" class="flex items-center space-x-2">
-                    <!-- MapPin icon -->
-                    <svg class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <span class="text-2xl font-bold text-primary">YayooTrip</span>
-                </a>
-            </div>
-            <div class="text-2xl font-bold text-slate-800">🗺️ Tạo Lịch Trình Du Lịch</div>
-            <div class="ml-auto flex items-center gap-3">
-                <button (click)="retryFailedItinerary()"
-                    class="px-4 py-2 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-700 font-medium transition-colors">
-                    🔄 Thử lại
-                </button>
-                <button (click)="saveDraft()"
-                    class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors">
-                    💾 Lưu nháp
-                </button>
-                <button (click)="completeItinerary()"
-                    class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white font-medium shadow-lg transition-all">
-                    ✅ Hoàn tất
-                </button>
+        <div class="mx-auto max-w-7xl px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <a routerLink="/" class="flex items-center space-x-2">
+                        <svg class="h-8 w-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="text-2xl font-bold text-blue-600">YayooTrip</span>
+                    </a>
+                    <div class="text-xl font-semibold text-gray-800">📅 Tạo Lịch Trình Du Lịch</div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button (click)="retryFailedItinerary()"
+                        class="px-4 py-2 rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-700 font-medium transition-colors">
+                        🔄 Thử lại
+                    </button>
+                    <button (click)="saveDraft()"
+                        class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors">
+                        💾 Lưu nháp
+                    </button>
+                    <button (click)="completeItinerary()"
+                        class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium shadow-lg transition-all">
+                        ✅ Hoàn tất
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -43,488 +44,510 @@
         </div>
     </div>
 
-    <div class="mx-auto max-w-7xl p-6 grid grid-cols-12 gap-6">
-        <!-- Left: Items table -->
-        <div class="col-span-12 lg:col-span-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-white/20 p-6">
-                <div class="flex items-center gap-3 mb-6">
+    <div class="mx-auto max-w-7xl p-6">
+        <!-- Trip Info Section -->
+        <div class="bg-white rounded-xl shadow-lg border p-6 mb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📝 Tên lịch trình</label>
                     <input
-                        class="flex-1 rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 text-lg font-medium transition-colors"
+                        class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 text-lg font-medium transition-colors"
                         placeholder="Nhập tên lịch trình của bạn..." [(ngModel)]="name" />
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm font-medium text-slate-600">Từ:</label>
-                        <input type="date"
-                            class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                            [(ngModel)]="startDate" />
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm font-medium text-slate-600">Đến:</label>
-                        <input type="date"
-                            class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                            [(ngModel)]="endDate" />
-                    </div>
                 </div>
-
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-xl font-bold text-slate-800">📋 Bảng Lịch Trình</div>
-                    <button
-                        class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow-lg transition-all"
-                        (click)="showAddChooser = true">
-                        ➕ Thêm mục mới
-                    </button>
+                <div class="lg:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📅 Ngày bắt đầu</label>
+                    <input type="date"
+                        class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-3 py-3 transition-colors"
+                        [(ngModel)]="startDate" />
                 </div>
-
-                <!-- Items table -->
-                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gradient-to-r from-slate-100 to-slate-50">
-                            <tr class="text-left">
-                                <th class="px-4 py-3 w-[140px] font-semibold text-slate-700">Loại</th>
-                                <th class="px-4 py-3 font-semibold text-slate-700">Tên địa điểm / dịch vụ</th>
-                                <th class="px-4 py-3 w-[180px] font-semibold text-slate-700">Thời gian bắt đầu</th>
-                                <th class="px-4 py-3 w-[180px] font-semibold text-slate-700">Thời gian kết thúc</th>
-                                <th class="px-4 py-3 w-[130px] font-semibold text-slate-700">Chi phí (VNĐ)</th>
-                                <th class="px-4 py-3 w-[100px] font-semibold text-slate-700">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="items.length === 0">
-                                <td class="px-4 py-8 text-slate-500 text-center" [attr.colspan]="6">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <div class="text-4xl">🗺️</div>
-                                        <div>Chưa có mục nào trong lịch trình</div>
-                                        <div class="text-xs">Nhấn "➕ Thêm mục mới" để bắt đầu</div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr *ngFor="let it of items"
-                                (click)="selectedItemId = (it.travelPlaceId || it.accomodationId) || null"
-                                [class]="cn('border-t border-slate-200 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-amber-50 cursor-pointer transition-all',
-                               selectedItemId === (it.travelPlaceId || it.accomodationId) && 'bg-gradient-to-r from-cyan-100 to-amber-100 border-cyan-300')">
-                                <td class="px-4 py-3">
-                                    <span [class]="cn('inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold',
-                                it.kind === 'destination'
-                                  ? 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
-                                  : 'bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800')">
-                                        {{ it.kind === 'destination' ? '🏛️ Địa điểm' : '🛎️ Dịch vụ' }}
-                                    </span>
-                                </td>
-
-                                <td class="px-4 py-3 font-medium text-slate-800">{{ it.name }}</td>
-
-                                <td class="px-4 py-3">
-                                    <input type="datetime-local"
-                                        class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                        [ngModel]="it.startTime"
-                                        (ngModelChange)="updateStartTime((it.travelPlaceId || it.accomodationId)!, $event)" />
-                                </td>
-
-                                <td class="px-4 py-3">
-                                    <input type="datetime-local"
-                                        class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                        [ngModel]="it.endTime"
-                                        (ngModelChange)="updateEndTime((it.travelPlaceId || it.accomodationId)!, $event)" />
-                                </td>
-
-                                <td class="px-4 py-3">
-                                    <input type="number" min="0"
-                                        class="w-full rounded-lg border border-slate-300 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                        [ngModel]="it.estimatedCost"
-                                        (ngModelChange)="updateEstimatedCost((it.travelPlaceId || it.accomodationId)!, $event)" />
-                                </td>
-
-                                <td class="px-4 py-3 text-right">
-                                    <button
-                                        class="px-3 py-1 rounded-lg hover:bg-red-100 text-red-600 font-medium transition-colors"
-                                        (click)="$event.stopPropagation(); removeItem((it.travelPlaceId || it.accomodationId)!)">
-                                        🗑️ Xóa
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="lg:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">📅 Ngày kết thúc</label>
+                    <input type="date"
+                        class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-3 py-3 transition-colors"
+                        [(ngModel)]="endDate" />
                 </div>
             </div>
         </div>
 
-        <!-- Right: Detail panel -->
-        <div class="col-span-12 lg:col-span-4">
-            <div class="bg-white rounded-2xl shadow-lg border border-white/20 p-6">
-                <div class="text-xl font-bold text-slate-800 mb-4">⚙️ Chi Tiết Mục Đã Chọn</div>
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Left: Items table -->
+            <div class="col-span-12 lg:col-span-8">
+                <div class="bg-white rounded-xl shadow-lg border p-6">
 
-                <div *ngIf="!selectedItem" class="text-center py-8">
-                    <div class="text-4xl mb-2">👆</div>
-                    <div class="text-slate-500">Chọn một mục trong bảng để xem và chỉnh sửa chi tiết</div>
-                </div>
-
-                <!-- Destination -->
-                <div *ngIf="selectedItem && selectedItem.kind === 'destination'" class="space-y-4">
-                    <div class="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-                        <div class="text-sm text-slate-600">🏛️ Địa điểm du lịch</div>
-                        <div class="font-bold text-lg text-slate-800">{{ selectedItem.name }}</div>
-                        <div class="text-sm text-slate-600">📍 {{ selectedItem.address }}</div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="text-2xl font-bold text-gray-800">📋 Bảng Lịch Trình</div>
+                        <button
+                            class="px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-medium hover:from-green-700 hover:to-green-800 shadow-lg transition-all"
+                            (click)="showAddChooser = true">
+                            ➕ Thêm mục mới
+                        </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="text-sm font-medium text-slate-700">
-                            ⏰ Thời gian bắt đầu
-                            <input type="datetime-local"
-                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                [ngModel]="selectedItem.startTime || ''"
-                                (ngModelChange)="updateSelected({ startTime: $event })" />
-                        </label>
-                        <label class="text-sm font-medium text-slate-700">
-                            ⏰ Thời gian kết thúc
-                            <input type="datetime-local"
-                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                [ngModel]="selectedItem.endTime || ''"
-                                (ngModelChange)="updateSelected({ endTime: $event })" />
-                        </label>
-                    </div>
-
-                    <label class="text-sm font-medium text-slate-700">
-                        💰 Chi phí ước tính (VNĐ)
-                        <input type="number" min="0"
-                            class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                            [ngModel]="selectedItem.estimatedCost || ''"
-                            (ngModelChange)="updateSelected({ estimatedCost: $event })" />
-                    </label>
-
-                    <label class="text-sm font-medium text-slate-700">
-                        🎒 Đồ dùng cần mang theo
-                        <input
-                            class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                            placeholder="Ví dụ: Áo mưa, nước uống, pin dự phòng..." [ngModel]="selectedItem.gear || ''"
-                            (ngModelChange)="updateSelected({ gear: $event })" />
-                        <div class="text-xs text-slate-500 mt-1">Ngăn cách các món đồ bằng dấu phẩy</div>
-                    </label>
-
-                    <!-- Attached services -->
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="font-bold text-slate-800">🛎️ Dịch Vụ Đi Kèm</div>
-                            <button
-                                class="px-3 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
-                                (click)="attachPanelOpen = true">
-                                ➕ Thêm dịch vụ
-                            </button>
-                        </div>
-
-                        <div *ngIf="(selectedItem.attachedServices || []).length === 0"
-                            class="text-center py-4 text-slate-500 bg-slate-50 rounded-lg">
-                            <div class="text-2xl mb-1">🛎️</div>
-                            <div class="text-sm">Chưa có dịch vụ đi kèm nào</div>
-                        </div>
-
-                        <div *ngIf="(selectedItem.attachedServices || []).length > 0"
-                            class="border-2 border-slate-200 rounded-xl overflow-hidden">
-                            <table class="w-full text-xs">
-                                <thead class="bg-gradient-to-r from-slate-100 to-slate-50">
+                    <!-- Items table -->
+                    <div class="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm min-w-[1000px]">
+                                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                                     <tr class="text-left">
-                                        <th class="px-3 py-2 font-semibold text-slate-700">Tên dịch vụ</th>
-                                        <th class="px-3 py-2 w-[90px] font-semibold text-slate-700">Bắt đầu</th>
-                                        <th class="px-3 py-2 w-[90px] font-semibold text-slate-700">Kết thúc</th>
-                                        <th class="px-3 py-2 w-[70px] font-semibold text-slate-700">Chi phí</th>
-                                        <th class="px-3 py-2 w-[50px] font-semibold text-slate-700"></th>
+                                        <th class="px-6 py-4 w-[120px] font-semibold text-gray-700">Loại</th>
+                                        <th class="px-6 py-4 font-semibold text-gray-700">Tên địa điểm / dịch vụ</th>
+                                        <th class="px-6 py-4 w-[200px] font-semibold text-gray-700">Thời gian bắt đầu
+                                        </th>
+                                        <th class="px-6 py-4 w-[200px] font-semibold text-gray-700">Thời gian kết thúc
+                                        </th>
+                                        <th class="px-6 py-4 w-[150px] font-semibold text-gray-700">Chi phí (VNĐ)</th>
+                                        <th class="px-6 py-4 w-[120px] font-semibold text-gray-700">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let att of selectedItem.attachedServices"
-                                        class="border-t border-slate-200">
-                                        <td class="px-3 py-2 font-medium">{{ att.name }}</td>
-                                        <td class="px-3 py-2">
-                                            <input type="datetime-local" class="w-full rounded border px-1 py-1 text-xs"
-                                                [ngModel]="att.startTime || ''"
-                                                (ngModelChange)="updateAttachedServiceStartTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                    <tr *ngIf="items.length === 0">
+                                        <td class="px-6 py-12 text-gray-500 text-center" [attr.colspan]="6">
+                                            <div class="flex flex-col items-center gap-3">
+                                                <div class="text-5xl">🗺️</div>
+                                                <div class="text-lg font-medium">Chưa có mục nào trong lịch trình</div>
+                                                <div class="text-sm text-gray-400">Nhấn "➕ Thêm mục mới" để bắt đầu
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td class="px-3 py-2">
-                                            <input type="datetime-local" class="w-full rounded border px-1 py-1 text-xs"
-                                                [ngModel]="att.endTime || ''"
-                                                (ngModelChange)="updateAttachedServiceEndTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                    </tr>
+
+                                    <tr *ngFor="let it of items"
+                                        (click)="selectedItemId = (it.travelPlaceId || it.accomodationId) || null"
+                                        [class]="cn('border-t border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 cursor-pointer transition-all',
+                                       selectedItemId === (it.travelPlaceId || it.accomodationId) && 'bg-gradient-to-r from-blue-100 to-indigo-100 border-blue-300')">
+                                        <td class="px-6 py-4">
+                                            <span [class]="cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold',
+                                        it.kind === 'destination'
+                                          ? 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
+                                          : 'bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800')">
+                                                {{ it.kind === 'destination' ? '🏛️ Địa điểm' : '🛎️ Dịch vụ' }}
+                                            </span>
                                         </td>
-                                        <td class="px-3 py-2">
-                                            <input type="number" min="0" class="w-full rounded border px-1 py-1 text-xs"
-                                                [ngModel]="att.estimatedCost || ''"
-                                                (ngModelChange)="updateAttachedServiceEstimatedCost((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+
+                                        <td class="px-6 py-4 font-medium text-gray-800 text-base">{{ it.name }}</td>
+
+                                        <td class="px-6 py-4">
+                                            <input type="datetime-local"
+                                                class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-3 py-2 transition-colors"
+                                                [ngModel]="it.startTime"
+                                                (ngModelChange)="updateStartTime((it.travelPlaceId || it.accomodationId)!, $event)" />
                                         </td>
-                                        <td class="px-3 py-2 text-right">
-                                            <button class="px-2 py-1 rounded hover:bg-red-100 text-red-600 text-xs"
-                                                (click)="removeAttachedService(att.id)">
-                                                Xóa
+
+                                        <td class="px-6 py-4">
+                                            <input type="datetime-local"
+                                                class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-3 py-2 transition-colors"
+                                                [ngModel]="it.endTime"
+                                                (ngModelChange)="updateEndTime((it.travelPlaceId || it.accomodationId)!, $event)" />
+                                        </td>
+
+                                        <td class="px-6 py-4">
+                                            <input type="number" min="0"
+                                                class="w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-3 py-2 transition-colors"
+                                                [ngModel]="it.estimatedCost"
+                                                (ngModelChange)="updateEstimatedCost((it.travelPlaceId || it.accomodationId)!, $event)" />
+                                        </td>
+
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="px-4 py-2 rounded-lg hover:bg-red-100 text-red-600 font-medium transition-colors"
+                                                (click)="$event.stopPropagation(); removeItem((it.travelPlaceId || it.accomodationId)!)">
+                                                🗑️ Xóa
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Right: Detail panel -->
+            <div class="col-span-12 lg:col-span-4">
+                <div class="bg-white rounded-xl shadow-lg border p-6">
+                    <div class="text-xl font-bold text-gray-800 mb-6">⚙️ Chi Tiết Mục Đã Chọn</div>
+
+                    <div *ngIf="!selectedItem" class="text-center py-12">
+                        <div class="text-5xl mb-3">👆</div>
+                        <div class="text-gray-500 text-lg">Chọn một mục trong bảng để xem và chỉnh sửa chi tiết</div>
+                    </div>
+
+                    <!-- Destination -->
+                    <div *ngIf="selectedItem && selectedItem.kind === 'destination'" class="space-y-6">
+                        <div class="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                            <div class="text-sm text-blue-600 font-medium mb-2">🏛️ Địa điểm du lịch</div>
+                            <div class="font-bold text-xl text-gray-800 mb-2">{{ selectedItem.name }}</div>
+                            <div class="text-sm text-gray-600">📍 {{ selectedItem.address }}</div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <label class="text-sm font-medium text-gray-700">
+                                ⏰ Thời gian bắt đầu
+                                <input type="datetime-local"
+                                    class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                    [ngModel]="selectedItem.startTime || ''"
+                                    (ngModelChange)="updateSelected({ startTime: $event })" />
+                            </label>
+                            <label class="text-sm font-medium text-gray-700">
+                                ⏰ Thời gian kết thúc
+                                <input type="datetime-local"
+                                    class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                    [ngModel]="selectedItem.endTime || ''"
+                                    (ngModelChange)="updateSelected({ endTime: $event })" />
+                            </label>
+                        </div>
+
+                        <label class="text-sm font-medium text-gray-700">
+                            💰 Chi phí ước tính (VNĐ)
+                            <input type="number" min="0"
+                                class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                [ngModel]="selectedItem.estimatedCost || ''"
+                                (ngModelChange)="updateSelected({ estimatedCost: $event })" />
+                        </label>
+
+                        <label class="text-sm font-medium text-gray-700">
+                            🎒 Đồ dùng cần mang theo
+                            <input
+                                class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                placeholder="Ví dụ: Áo mưa, nước uống, pin dự phòng..."
+                                [ngModel]="selectedItem.gear || ''"
+                                (ngModelChange)="updateSelected({ gear: $event })" />
+                            <div class="text-xs text-gray-500 mt-2">Ngăn cách các món đồ bằng dấu phẩy</div>
+                        </label>
+
+                        <!-- Attached services -->
+                        <div class="border-t pt-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="font-bold text-gray-800 text-lg">🛎️ Dịch Vụ Đi Kèm</div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-medium hover:from-green-700 hover:to-green-800 shadow transition-all"
+                                    (click)="attachPanelOpen = true">
+                                    ➕ Thêm dịch vụ
+                                </button>
+                            </div>
+
+                            <div *ngIf="(selectedItem.attachedServices || []).length === 0"
+                                class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                                <div class="text-3xl mb-2">🛎️</div>
+                                <div class="text-sm">Chưa có dịch vụ đi kèm nào</div>
+                            </div>
+
+                            <div *ngIf="(selectedItem.attachedServices || []).length > 0"
+                                class="border-2 border-gray-200 rounded-xl overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm min-w-[600px]">
+                                        <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                            <tr class="text-left">
+                                                <th class="px-4 py-3 font-semibold text-gray-700">Tên dịch vụ</th>
+                                                <th class="px-4 py-3 w-[120px] font-semibold text-gray-700">Bắt đầu</th>
+                                                <th class="px-4 py-3 w-[120px] font-semibold text-gray-700">Kết thúc
+                                                </th>
+                                                <th class="px-4 py-3 w-[100px] font-semibold text-gray-700">Chi phí</th>
+                                                <th class="px-4 py-3 w-[80px] font-semibold text-gray-700"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let att of selectedItem.attachedServices"
+                                                class="border-t border-gray-200">
+                                                <td class="px-4 py-3 font-medium text-gray-800">{{ att.name }}</td>
+                                                <td class="px-4 py-3">
+                                                    <input type="datetime-local"
+                                                        class="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs"
+                                                        [ngModel]="att.startTime || ''"
+                                                        (ngModelChange)="updateAttachedServiceStartTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="datetime-local"
+                                                        class="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs"
+                                                        [ngModel]="att.endTime || ''"
+                                                        (ngModelChange)="updateAttachedServiceEndTime((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" min="0"
+                                                        class="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs"
+                                                        [ngModel]="att.estimatedCost || ''"
+                                                        (ngModelChange)="updateAttachedServiceEstimatedCost((selectedItem!.travelPlaceId || selectedItem!.accomodationId)!, att.id, $event)" />
+                                                </td>
+                                                <td class="px-4 py-3 text-right">
+                                                    <button
+                                                        class="px-3 py-1 rounded-lg hover:bg-red-100 text-red-600 text-xs font-medium"
+                                                        (click)="removeAttachedService(att.id)">
+                                                        Xóa
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service -->
+                    <div *ngIf="selectedItem && selectedItem.kind === 'service'" class="space-y-6">
+                        <div class="p-5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+                            <div class="text-sm text-amber-600 font-medium mb-2">🛎️ Dịch vụ</div>
+                            <div class="font-bold text-xl text-gray-800 mb-2">{{ selectedItem.name }}</div>
+                            <div class="text-sm text-gray-600">📍 {{ selectedItem.address }}</div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <label class="text-sm font-medium text-gray-700">
+                                ⏰ Thời gian bắt đầu
+                                <input type="datetime-local"
+                                    class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                    [ngModel]="selectedItem.startTime || ''"
+                                    (ngModelChange)="updateSelected({ startTime: $event })" />
+                            </label>
+                            <label class="text-sm font-medium text-gray-700">
+                                ⏰ Thời gian kết thúc
+                                <input type="datetime-local"
+                                    class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                    [ngModel]="selectedItem.endTime || ''"
+                                    (ngModelChange)="updateSelected({ endTime: $event })" />
+                            </label>
+                        </div>
+
+                        <label class="text-sm font-medium text-gray-700">
+                            💰 Chi phí ước tính (VNĐ)
+                            <input type="number" min="0"
+                                class="mt-2 w-full rounded-lg border-2 border-gray-200 focus:border-blue-500 px-4 py-3 transition-colors"
+                                [ngModel]="selectedItem.estimatedCost || ''"
+                                (ngModelChange)="updateSelected({ estimatedCost: $event })" />
+                        </label>
+
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="text-sm text-blue-800">
+                                <strong>ℹ️ Lưu ý:</strong> Mục dịch vụ này chỉ chứa một dịch vụ đơn lẻ (không có bảng
+                                dịch
+                                vụ đi kèm như địa điểm du lịch).
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Add chooser modal -->
+        <div *ngIf="showAddChooser"
+            class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            (click)="closeAllAddPanels()">
+            <div class="bg-white rounded-2xl shadow-2xl w-[720px] max-w-[95vw] p-6" (click)="$event.stopPropagation()">
+
+                <!-- Chooser -->
+                <div *ngIf="!addMode">
+                    <div class="text-2xl font-bold text-slate-800 mb-4">🎯 Chọn Loại Mục Cần Thêm</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button
+                            class="rounded-2xl border-2 border-slate-200 hover:border-cyan-300 p-6 hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 text-left transition-all group"
+                            (click)="addMode = 'destination'">
+                            <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">🏛️</div>
+                            <div class="text-lg font-bold text-slate-800 mb-2">Địa Điểm Du Lịch</div>
+                            <div class="text-sm text-slate-600">
+                                Chọn điểm đến từ cơ sở dữ liệu, sau đó có thể thêm thời gian, chi phí, đồ dùng và các
+                                dịch
+                                vụ đi kèm.
+                            </div>
+                        </button>
+                        <button
+                            class="rounded-2xl border-2 border-slate-200 hover:border-amber-300 p-6 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 text-left transition-all group"
+                            (click)="addMode = 'service'">
+                            <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">🛎️</div>
+                            <div class="text-lg font-bold text-slate-800 mb-2">Dịch Vụ</div>
+                            <div class="text-sm text-slate-600">
+                                Chọn trực tiếp loại dịch vụ và thời gian sử dụng (chỉ chứa một dịch vụ đơn lẻ).
+                            </div>
+                        </button>
+                    </div>
+                    <div class="mt-6 text-right">
+                        <button
+                            class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
+                            (click)="closeAllAddPanels()">
+                            ❌ Đóng
+                        </button>
                     </div>
                 </div>
 
-                <!-- Service -->
-                <div *ngIf="selectedItem && selectedItem.kind === 'service'" class="space-y-4">
-                    <div class="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
-                        <div class="text-sm text-slate-600">🛎️ Dịch vụ</div>
-                        <div class="font-bold text-lg text-slate-800">{{ selectedItem.name }}</div>
-                        <div class="text-sm text-slate-600">📍 {{ selectedItem.address }}</div>
+                <!-- Add Destination -->
+                <div *ngIf="addMode === 'destination'">
+                    <div class="text-2xl font-bold text-slate-800 mb-4">🏛️ Thêm Địa Điểm Du Lịch</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                        <select
+                            class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
+                            [(ngModel)]="filterProvince">
+                            <option value="">🌍 Chọn Tỉnh/Thành</option>
+                            <option *ngFor="let p of PROVINCES" [value]="p">{{ p }}</option>
+                        </select>
+
+                        <select
+                            class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
+                            [(ngModel)]="filterDestType">
+                            <option value="">🎯 Chọn Loại Hình</option>
+                            <option *ngFor="let t of DEST_TYPES" [value]="t">{{ t }}</option>
+                        </select>
+
+                        <input
+                            class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
+                            placeholder="🔍 Tìm kiếm từ khóa..." [(ngModel)]="filterKeyword" />
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="max-h-[350px] overflow-auto border-2 border-slate-200 rounded-xl divide-y">
+                        <div *ngFor="let d of FilteredTravelPlaces"
+                            class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-all">
+                            <div>
+                                <div class="font-bold text-slate-800">{{ d.name }}</div>
+                                <div class="text-sm text-slate-600">📍 {{ d.address }} • 🎯 {{ d.position }}</div>
+                            </div>
+                            <button
+                                class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
+                                (click)="addDestinationAsItem(d)">
+                                ✅ Chọn
+                            </button>
+                        </div>
+
+                        <div *ngIf="FilteredTravelPlaces.length === 0" class="p-8 text-center text-slate-500">
+                            <div class="text-4xl mb-2">🔍</div>
+                            <div>Không tìm thấy địa điểm phù hợp</div>
+                            <div class="text-sm mt-1">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-right">
+                        <button
+                            class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
+                            (click)="closeAllAddPanels()">
+                            ❌ Đóng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Add Service -->
+                <div *ngIf="addMode === 'service'">
+                    <div class="text-2xl font-bold text-slate-800 mb-4">🛎️ Thêm Dịch Vụ Trực Tiếp</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                        <select
+                            class="rounded-xl border-2 border-slate-200 focus:border-amber-500 px-4 py-3 transition-colors"
+                            [(ngModel)]="serviceType">
+                            <option value="">🛎️ Chọn Loại Dịch Vụ</option>
+                            <option *ngFor="let t of SERVICE_TYPES" [value]="t">{{ t }}</option>
+                        </select>
+
+                        <select
+                            class="rounded-xl border-2 border-slate-200 focus:border-amber-500 px-4 py-3 transition-colors"
+                            [(ngModel)]="serviceProvince">
+                            <option value="">🌍 Chọn Tỉnh/Thành</option>
+                            <option *ngFor="let p of PROVINCES" [value]="p">{{ p }}</option>
+                        </select>
+
+                        <div class="flex items-center gap-3 px-4 py-3 border-2 border-slate-200 rounded-xl">
+                            <span class="text-sm font-medium text-slate-700">📏 ≤ {{ serviceDistance }}km</span>
+                            <input type="range" min="1" max="50" [(ngModel)]="serviceDistance" class="flex-1" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                         <label class="text-sm font-medium text-slate-700">
                             ⏰ Thời gian bắt đầu
                             <input type="datetime-local"
-                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                [ngModel]="selectedItem.startTime || ''"
-                                (ngModelChange)="updateSelected({ startTime: $event })" />
+                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-amber-500 px-3 py-2 transition-colors"
+                                [(ngModel)]="serviceStart" />
                         </label>
                         <label class="text-sm font-medium text-slate-700">
                             ⏰ Thời gian kết thúc
                             <input type="datetime-local"
-                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                                [ngModel]="selectedItem.endTime || ''"
-                                (ngModelChange)="updateSelected({ endTime: $event })" />
+                                class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-amber-500 px-3 py-2 transition-colors"
+                                [(ngModel)]="serviceEnd" />
                         </label>
                     </div>
 
-                    <label class="text-sm font-medium text-slate-700">
-                        💰 Chi phí ước tính (VNĐ)
-                        <input type="number" min="0"
-                            class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-cyan-500 px-3 py-2 transition-colors"
-                            [ngModel]="selectedItem.estimatedCost || ''"
-                            (ngModelChange)="updateSelected({ estimatedCost: $event })" />
-                    </label>
-
-                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div class="text-sm text-blue-800">
-                            <strong>ℹ️ Lưu ý:</strong> Mục dịch vụ này chỉ chứa một dịch vụ đơn lẻ (không có bảng dịch
-                            vụ đi kèm như địa điểm du lịch).
+                    <div class="max-h-[300px] overflow-auto border-2 border-slate-200 rounded-xl divide-y">
+                        <div *ngFor="let s of FilteredServices"
+                            class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 transition-all">
+                            <div>
+                                <div class="font-bold text-slate-800">{{ s.name }}</div>
+                                <div class="text-sm text-slate-600">📍 {{ s.address }} • 🛎️ {{ s.position }} • 📏 {{
+                                    s.status }}km</div>
+                            </div>
+                            <button
+                                class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
+                                (click)="addServiceAsItem(s)">
+                                ✅ Chọn
+                            </button>
                         </div>
+
+                        <div *ngIf="FilteredServices.length === 0" class="p-8 text-center text-slate-500">
+                            <div class="text-4xl mb-2">🔍</div>
+                            <div>Không tìm thấy dịch vụ phù hợp</div>
+                            <div class="text-sm mt-1">Thử thay đổi bộ lọc hoặc tăng khoảng cách tìm kiếm</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-right">
+                        <button
+                            class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
+                            (click)="closeAllAddPanels()">
+                            ❌ Đóng
+                        </button>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
 
-    <!-- Add chooser modal -->
-    <div *ngIf="showAddChooser"
-        class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-        (click)="closeAllAddPanels()">
-        <div class="bg-white rounded-2xl shadow-2xl w-[720px] max-w-[95vw] p-6" (click)="$event.stopPropagation()">
-
-            <!-- Chooser -->
-            <div *ngIf="!addMode">
-                <div class="text-2xl font-bold text-slate-800 mb-4">🎯 Chọn Loại Mục Cần Thêm</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button
-                        class="rounded-2xl border-2 border-slate-200 hover:border-cyan-300 p-6 hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 text-left transition-all group"
-                        (click)="addMode = 'destination'">
-                        <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">🏛️</div>
-                        <div class="text-lg font-bold text-slate-800 mb-2">Địa Điểm Du Lịch</div>
-                        <div class="text-sm text-slate-600">
-                            Chọn điểm đến từ cơ sở dữ liệu, sau đó có thể thêm thời gian, chi phí, đồ dùng và các dịch
-                            vụ đi kèm.
-                        </div>
-                    </button>
-                    <button
-                        class="rounded-2xl border-2 border-slate-200 hover:border-amber-300 p-6 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 text-left transition-all group"
-                        (click)="addMode = 'service'">
-                        <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">🛎️</div>
-                        <div class="text-lg font-bold text-slate-800 mb-2">Dịch Vụ</div>
-                        <div class="text-sm text-slate-600">
-                            Chọn trực tiếp loại dịch vụ và thời gian sử dụng (chỉ chứa một dịch vụ đơn lẻ).
-                        </div>
-                    </button>
+        <!-- Attach service modal -->
+        <div *ngIf="attachPanelOpen && selectedItem && selectedItem.kind === 'destination'"
+            class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            (click)="attachPanelOpen = false">
+            <div class="bg-white rounded-2xl shadow-2xl w-[600px] max-w-[95vw] p-6" (click)="$event.stopPropagation()">
+                <div class="text-2xl font-bold text-slate-800 mb-4">🛎️ Thêm Dịch Vụ Đi Kèm</div>
+                <div class="text-sm text-slate-600 mb-4">
+                    Cho địa điểm: <strong>{{ selectedItem.name }}</strong> tại {{ selectedItem.address }}
                 </div>
-                <div class="mt-6 text-right">
-                    <button
-                        class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
-                        (click)="closeAllAddPanels()">
-                        ❌ Đóng
-                    </button>
-                </div>
-            </div>
 
-            <!-- Add Destination -->
-            <div *ngIf="addMode === 'destination'">
-                <div class="text-2xl font-bold text-slate-800 mb-4">🏛️ Thêm Địa Điểm Du Lịch</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                     <select
-                        class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
-                        [(ngModel)]="filterProvince">
-                        <option value="">🌍 Chọn Tỉnh/Thành</option>
-                        <option *ngFor="let p of PROVINCES" [value]="p">{{ p }}</option>
-                    </select>
-
-                    <select
-                        class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
-                        [(ngModel)]="filterDestType">
-                        <option value="">🎯 Chọn Loại Hình</option>
-                        <option *ngFor="let t of DEST_TYPES" [value]="t">{{ t }}</option>
-                    </select>
-
-                    <input
-                        class="rounded-xl border-2 border-slate-200 focus:border-cyan-500 px-4 py-3 transition-colors"
-                        placeholder="🔍 Tìm kiếm từ khóa..." [(ngModel)]="filterKeyword" />
-                </div>
-
-                <div class="max-h-[350px] overflow-auto border-2 border-slate-200 rounded-xl divide-y">
-                    <div *ngFor="let d of FilteredTravelPlaces"
-                        class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-all">
-                        <div>
-                            <div class="font-bold text-slate-800">{{ d.name }}</div>
-                            <div class="text-sm text-slate-600">📍 {{ d.address }} • 🎯 {{ d.position }}</div>
-                        </div>
-                        <button
-                            class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
-                            (click)="addDestinationAsItem(d)">
-                            ✅ Chọn
-                        </button>
-                    </div>
-
-                    <div *ngIf="FilteredTravelPlaces.length === 0" class="p-8 text-center text-slate-500">
-                        <div class="text-4xl mb-2">🔍</div>
-                        <div>Không tìm thấy địa điểm phù hợp</div>
-                        <div class="text-sm mt-1">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</div>
-                    </div>
-                </div>
-
-                <div class="mt-4 text-right">
-                    <button
-                        class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
-                        (click)="closeAllAddPanels()">
-                        ❌ Đóng
-                    </button>
-                </div>
-            </div>
-
-            <!-- Add Service -->
-            <div *ngIf="addMode === 'service'">
-                <div class="text-2xl font-bold text-slate-800 mb-4">🛎️ Thêm Dịch Vụ Trực Tiếp</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                    <select
-                        class="rounded-xl border-2 border-slate-200 focus:border-amber-500 px-4 py-3 transition-colors"
-                        [(ngModel)]="serviceType">
+                        class="rounded-xl border-2 border-slate-200 focus:border-emerald-500 px-4 py-3 transition-colors"
+                        [(ngModel)]="attachServiceType">
                         <option value="">🛎️ Chọn Loại Dịch Vụ</option>
                         <option *ngFor="let t of SERVICE_TYPES" [value]="t">{{ t }}</option>
                     </select>
 
-                    <select
-                        class="rounded-xl border-2 border-slate-200 focus:border-amber-500 px-4 py-3 transition-colors"
-                        [(ngModel)]="serviceProvince">
-                        <option value="">🌍 Chọn Tỉnh/Thành</option>
-                        <option *ngFor="let p of PROVINCES" [value]="p">{{ p }}</option>
-                    </select>
-
                     <div class="flex items-center gap-3 px-4 py-3 border-2 border-slate-200 rounded-xl">
-                        <span class="text-sm font-medium text-slate-700">📏 ≤ {{ serviceDistance }}km</span>
-                        <input type="range" min="1" max="50" [(ngModel)]="serviceDistance" class="flex-1" />
+                        <span class="text-sm font-medium text-slate-700">📏 ≤ {{ attachDistance }}km</span>
+                        <input type="range" min="1" max="20" [(ngModel)]="attachDistance" class="flex-1" />
                     </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                    <label class="text-sm font-medium text-slate-700">
-                        ⏰ Thời gian bắt đầu
-                        <input type="datetime-local"
-                            class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-amber-500 px-3 py-2 transition-colors"
-                            [(ngModel)]="serviceStart" />
-                    </label>
-                    <label class="text-sm font-medium text-slate-700">
-                        ⏰ Thời gian kết thúc
-                        <input type="datetime-local"
-                            class="mt-1 w-full rounded-lg border-2 border-slate-200 focus:border-amber-500 px-3 py-2 transition-colors"
-                            [(ngModel)]="serviceEnd" />
-                    </label>
                 </div>
 
                 <div class="max-h-[300px] overflow-auto border-2 border-slate-200 rounded-xl divide-y">
-                    <div *ngFor="let s of FilteredServices"
-                        class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 transition-all">
+                    <div *ngFor="let s of attachFiltered"
+                        class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 transition-all">
                         <div>
                             <div class="font-bold text-slate-800">{{ s.name }}</div>
-                            <div class="text-sm text-slate-600">📍 {{ s.address }} • 🛎️ {{ s.position }} • 📏 {{
-                                s.status }}km</div>
+                            <div class="text-sm text-slate-600">🛎️ {{ s.position }} • 📏 {{ s.status }}km từ {{
+                                selectedItem.name }}</div>
                         </div>
                         <button
                             class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
-                            (click)="addServiceAsItem(s)">
-                            ✅ Chọn
+                            (click)="addAttachedService(s)">
+                            ➕ Thêm
                         </button>
                     </div>
 
-                    <div *ngIf="FilteredServices.length === 0" class="p-8 text-center text-slate-500">
+                    <div *ngIf="attachFiltered.length === 0" class="p-8 text-center text-slate-500">
                         <div class="text-4xl mb-2">🔍</div>
                         <div>Không tìm thấy dịch vụ phù hợp</div>
-                        <div class="text-sm mt-1">Thử thay đổi bộ lọc hoặc tăng khoảng cách tìm kiếm</div>
+                        <div class="text-sm mt-1">Thử thay đổi loại dịch vụ hoặc tăng khoảng cách</div>
                     </div>
                 </div>
 
                 <div class="mt-4 text-right">
                     <button
                         class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
-                        (click)="closeAllAddPanels()">
+                        (click)="attachPanelOpen = false">
                         ❌ Đóng
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
-
-    <!-- Attach service modal -->
-    <div *ngIf="attachPanelOpen && selectedItem && selectedItem.kind === 'destination'"
-        class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-        (click)="attachPanelOpen = false">
-        <div class="bg-white rounded-2xl shadow-2xl w-[600px] max-w-[95vw] p-6" (click)="$event.stopPropagation()">
-            <div class="text-2xl font-bold text-slate-800 mb-4">🛎️ Thêm Dịch Vụ Đi Kèm</div>
-            <div class="text-sm text-slate-600 mb-4">
-                Cho địa điểm: <strong>{{ selectedItem.name }}</strong> tại {{ selectedItem.address }}
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                <select
-                    class="rounded-xl border-2 border-slate-200 focus:border-emerald-500 px-4 py-3 transition-colors"
-                    [(ngModel)]="attachServiceType">
-                    <option value="">🛎️ Chọn Loại Dịch Vụ</option>
-                    <option *ngFor="let t of SERVICE_TYPES" [value]="t">{{ t }}</option>
-                </select>
-
-                <div class="flex items-center gap-3 px-4 py-3 border-2 border-slate-200 rounded-xl">
-                    <span class="text-sm font-medium text-slate-700">📏 ≤ {{ attachDistance }}km</span>
-                    <input type="range" min="1" max="20" [(ngModel)]="attachDistance" class="flex-1" />
-                </div>
-            </div>
-
-            <div class="max-h-[300px] overflow-auto border-2 border-slate-200 rounded-xl divide-y">
-                <div *ngFor="let s of attachFiltered"
-                    class="p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 transition-all">
-                    <div>
-                        <div class="font-bold text-slate-800">{{ s.name }}</div>
-                        <div class="text-sm text-slate-600">🛎️ {{ s.position }} • 📏 {{ s.status }}km từ {{
-                            selectedItem.name }}</div>
-                    </div>
-                    <button
-                        class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 shadow transition-all"
-                        (click)="addAttachedService(s)">
-                        ➕ Thêm
-                    </button>
-                </div>
-
-                <div *ngIf="attachFiltered.length === 0" class="p-8 text-center text-slate-500">
-                    <div class="text-4xl mb-2">🔍</div>
-                    <div>Không tìm thấy dịch vụ phù hợp</div>
-                    <div class="text-sm mt-1">Thử thay đổi loại dịch vụ hoặc tăng khoảng cách</div>
-                </div>
-            </div>
-
-            <div class="mt-4 text-right">
-                <button
-                    class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors"
-                    (click)="attachPanelOpen = false">
-                    ❌ Đóng
-                </button>
-            </div>
-        </div>
-    </div>
-</div>

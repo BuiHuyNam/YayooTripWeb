@@ -35,6 +35,11 @@ export interface Itinerary {
   items: ScheduleItem[];
 }
 
+export interface CreateItineraryResponse {
+  scheduleId: string;
+  message: string;
+}
+
 export interface TravelPlace {
   id: string;
   name: string;
@@ -71,14 +76,14 @@ export class CreateItineraryServiceTs {
   getItineraries(): Observable<Itinerary[]> {
     return this.http.get<Itinerary[]>(`${this.API_URL}/api/itinerary`);
   }
-  createItinerary(itinerary: Itinerary): Observable<Itinerary> {
+  createItinerary(itinerary: Itinerary): Observable<CreateItineraryResponse> {
     const token = localStorage.getItem('token'); // hoặc nơi bạn lưu token
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
 
-    return this.http.post<Itinerary>(
+    return this.http.post<CreateItineraryResponse>(
       `${this.API_URL}/api/schedule`,
       itinerary,
       { headers }
