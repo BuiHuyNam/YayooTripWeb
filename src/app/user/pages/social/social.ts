@@ -4,13 +4,14 @@ import { Post as CardPost, PostCardComponent } from '../../components/post-card'
 import { SocialService, Post as ServicePost, Post } from '../../social.service';
 import { FormsModule } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
+import { CommentsModalComponent } from '../../components/comments-modal.component';
 
 type Privacy = 'public' | 'friends' | 'private';
 
 @Component({
   selector: 'app-social',
   standalone: true,
-  imports: [CommonModule, PostCardComponent, FormsModule],
+  imports: [CommonModule, PostCardComponent, FormsModule, CommentsModalComponent],
   templateUrl: './social.html',
   styleUrls: ['./social.css']
 })
@@ -262,4 +263,21 @@ export class Social implements OnInit, OnDestroy {
 
    
   }
+  
+isCommentsOpen = false;
+commentsPost?: CardPost;
+commentsPostId = '';                         // [THÊM]
+
+openComments(p: CardPost) {
+  this.commentsPost = p;
+  this.commentsPostId = (p.id || '').trim(); // [THÊM] cắt trắng
+  this.isCommentsOpen = true;
+}
+
+closeComments() {
+  this.isCommentsOpen = false;
+  this.commentsPost = undefined;
+  this.commentsPostId = '';
+}
+
 }
