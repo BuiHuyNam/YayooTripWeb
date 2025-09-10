@@ -6,6 +6,7 @@ import { routes } from '../../../app.routes';
 import { CreateItineraryServiceTs, ScheduleItem, Itinerary, AttachedService } from './service/create-itinerary.service.ts';
 import { TravelPlace } from './service/create-itinerary.service.ts';
 import { Service as ServiceType } from './service/create-itinerary.service.ts';
+import Swal from 'sweetalert2';
 
 type Destination = { id: string; name: string; province: string; type: string };
 type Service = { id: string; name: string; province: string; type: string; distanceKm: number };
@@ -265,10 +266,15 @@ export class CreateItinerary {
   }
 
   saveDraft() {
-    alert('[Demo] Đã lưu Nháp! (mock)');
+    // alert('[Demo] Đã lưu Nháp! (mock)');
+    Swal.fire({
+      title: 'Đã lưu Nháp!',
+      icon: 'success',
+      timer: 1500
+    });
   }
   completeItinerary() {
-    alert('[Demo] Hoàn tất lịch trình! (mock)');
+    // alert('[Demo] Hoàn tất lịch trình! (mock)');
     this.createItinerary()
     // this.router.navigate(['/itineraries/1']);
   }
@@ -285,7 +291,11 @@ export class CreateItinerary {
     this.createItineraryService.createItinerary(itinerary).subscribe({
       next: (response) => {
         console.log('Itinerary created successfully:', response);
-        alert('✅ Lịch trình đã được tạo thành công!');
+        Swal.fire({
+          title: 'Lịch trình đã được tạo thành công!',
+          icon: 'success',
+          timer: 1500
+        });
         // Xóa dữ liệu tạm thời sau khi tạo thành công
         this.clearTemporaryData();
       },
@@ -294,9 +304,17 @@ export class CreateItinerary {
         if (error.status === 503) {
           // Lưu dữ liệu tạm thời vào localStorage
           this.saveTemporaryData(itinerary);
-          alert('⚠️ Backend server hiện không khả dụng. Dữ liệu đã được lưu tạm thời.');
+          Swal.fire({
+            title: '⚠️ Backend server hiện không khả dụng. Dữ liệu đã được lưu tạm thời.',
+            icon: 'warning',
+            timer: 1500
+          });
         } else {
-          alert('❌ Có lỗi xảy ra khi tạo lịch trình. Vui lòng thử lại sau.');
+          Swal.fire({
+            title: 'Có lỗi xảy ra khi tạo lịch trình. Vui lòng thử lại sau.',
+            icon: 'error',
+            timer: 1500
+          });
         }
       }
     });
@@ -334,24 +352,44 @@ export class CreateItinerary {
           this.createItineraryService.createItinerary(parsed.itinerary).subscribe({
             next: (response) => {
               console.log('Retry successful:', response);
-              alert('✅ Lịch trình đã được tạo thành công sau khi thử lại!');
+              Swal.fire({
+                title: 'Lịch trình đã được tạo thành công sau khi thử lại!',
+                icon: 'success',
+                timer: 1500
+              });
               this.clearTemporaryData();
             },
             error: (error) => {
               console.error('Retry failed:', error);
               localStorage.setItem('temp_itinerary', JSON.stringify(parsed));
-              alert(`❌ Thử lại lần ${parsed.retryCount} thất bại. Vui lòng thử lại sau.`);
+              Swal.fire({
+                title: `Thử lại lần ${parsed.retryCount} thất bại. Vui lòng thử lại sau.`,
+                icon: 'error',
+                timer: 1500
+              });
             }
           });
         } else {
-          alert('❌ Đã thử lại quá nhiều lần. Vui lòng liên hệ hỗ trợ.');
+          Swal.fire({
+            title: 'Đã thử lại quá nhiều lần. Vui lòng liên hệ hỗ trợ.',
+            icon: 'error',
+            timer: 1500
+          });
         }
       } else {
-        alert('ℹ️ Không có dữ liệu tạm thời để thử lại.');
+        Swal.fire({
+          title: 'Không có dữ liệu tạm thời để thử lại.',
+          icon: 'warning',
+          timer: 1500
+        });
       }
     } catch (error) {
       console.error('Error retrying failed itinerary:', error);
-      alert('❌ Có lỗi xảy ra khi thử lại.');
+      Swal.fire({
+        title: 'Có lỗi xảy ra khi thử lại.',
+        icon: 'error',
+        timer: 1500
+      });
     }
   }
 

@@ -1,0 +1,29 @@
+<div class="min-h-screen bg-gradient-to-br from-primary-50 to-primary-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="shadow-lg border-0 bg-white rounded-xl">
+            <div class="p-6 text-center">
+                <h1 class="text-2xl font-bold text-gray-900">Xác minh OTP</h1>
+                <p class="text-gray-500">Nhập mã OTP đã được gửi tới email của bạn</p>
+            </div>
+
+            <div class="p-6 pt-0">
+                <form (ngSubmit)="submitOtp($event)" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Mã OTP</label>
+                        <input type="text" [(ngModel)]="otp" name="otp"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Nhập mã OTP" required />
+                    </div>
+
+                    <div *ngIf="errorMsg" class="text-sm text-red-600">{{ errorMsg }}</div>
+
+                    <button type="submit"
+                        class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-md disabled:opacity-60"
+                        [disabled]="isSubmitting">
+                        Xác minh
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

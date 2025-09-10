@@ -110,7 +110,7 @@
           <button type="submit"
             class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-md disabled:opacity-60"
             [disabled]="!formData.agreeToTerms">
-            Đăng ký
+            {{ isLoading ? 'Đang đăng ký…' : 'Đăng ký' }}
           </button>
         </form>
 
