@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
 import { CommentsModalComponent } from '../../components/comments-modal.component';
 import Swal from 'sweetalert2';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 
 type Privacy = 'public' | 'friends' | 'private';
 
@@ -17,7 +18,7 @@ type Privacy = 'public' | 'friends' | 'private';
   styleUrls: ['./social.css']
 })
 export class Social implements OnInit, OnDestroy {
-  constructor(private socialService: SocialService) { }
+  constructor(private socialService: SocialService, private zone: NgZone, private cdr: ChangeDetectorRef) { }
 
   posts: CardPost[] = [];
 
@@ -49,7 +50,10 @@ export class Social implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.socialService.getPosts().subscribe({
       next: (data: ServicePost[]) => {
+        this.zone.run(() => { 
         this.posts = data.map(p => this.mapServicePostToCardPost(p));
+        this.cdr.detectChanges();
+      })
       },
       error: (e) => console.error('Load posts failed:', e)
     });

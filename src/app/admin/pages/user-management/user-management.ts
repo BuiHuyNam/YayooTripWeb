@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DecimalPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { User, UserManagementService } from '../../services/user-management.service';
 import { HttpClient, HttpClientModule, HttpContext } from '@angular/common/http';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 
 type UserStatus = 'active' | 'locked' | 'pending';
 
@@ -44,7 +45,7 @@ export class UserManagement implements OnInit {
     { label: "Doanh thu", value: 0, color: "text-purple-600", bg: "bg-purple-100" },
   ];
 
-  constructor(private userService: UserManagementService) { }
+  constructor(private userService: UserManagementService, private zone: NgZone, private cdr: ChangeDetectorRef) { }
   // ------- View helpers -------
   filteredUserss(): User[] {
     const q = this.search.trim().toLowerCase();
@@ -58,12 +59,15 @@ export class UserManagement implements OnInit {
   ngOnInit(): void {
     this.userService.loadData().subscribe({
       next: (data) => {
+         this.zone.run(() => { 
         console.log(data)
         this.users = data;
         this.filteredUsers = this.filteredUserss();
 
         // cập nhật stat card
         this.cards[0].value = this.users.length;
+        this.cdr.detectChanges();
+         })
       },
       error: (err) => console.error("Error fetching users:", err)
     });

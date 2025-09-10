@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocationMapComponent } from '../../components/location-map';
 import { UserService } from '../../user.service';
 import { LocationDetail } from '../location-detail/location-detail';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 
 
 export type ViewMode = 'list' | 'map';
@@ -47,7 +48,7 @@ export class Discovery {
   loading = false;
   errorMsg = '';
 
-  constructor(private userService: UserService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private userService: UserService, private router: Router, private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.fetchLocations();
@@ -57,10 +58,13 @@ fetchLocations() {
   this.loading = true;
   this.errorMsg = '';
   this.userService.getLocations().subscribe({
-    next: (data: LocationItem[]) => {           // 👈 thêm kiểu ở đây
+    next: (data: LocationItem[]) => {   
+      this.zone.run(() => {        // 👈 thêm kiểu ở đây
       this.locations = data;
       this.resultsCount = data.length;          // hoặc dùng biến cục bộ, xem mục 3
       this.loading = false;
+      this.cdr.detectChanges();
+      });
     },
     error: (err) => {
       console.error(err);
