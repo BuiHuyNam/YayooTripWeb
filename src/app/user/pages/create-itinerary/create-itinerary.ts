@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { routes } from '../../../app.routes';
-import { CreateItineraryServiceTs, ScheduleItem, Itinerary, AttachedService } from './service/create-itinerary.service.ts';
+import { CreateItineraryServiceTs, ScheduleItem, Itinerary, AttachedService, CreateItineraryResponse } from './service/create-itinerary.service.ts';
 import { TravelPlace } from './service/create-itinerary.service.ts';
 import { Service as ServiceType } from './service/create-itinerary.service.ts';
 import Swal from 'sweetalert2';
@@ -289,12 +289,15 @@ export class CreateItinerary {
     };
 
     this.createItineraryService.createItinerary(itinerary).subscribe({
-      next: (response) => {
+      next: (response: CreateItineraryResponse) => {
         console.log('Itinerary created successfully:', response);
         Swal.fire({
           title: 'Lịch trình đã được tạo thành công!',
           icon: 'success',
           timer: 1500
+        }).then(() => {
+          // Chuyển hướng đến màn hình itinerary-view với scheduleId
+          this.router.navigate(['/itineraries', response.scheduleId]);
         });
         // Xóa dữ liệu tạm thời sau khi tạo thành công
         this.clearTemporaryData();
@@ -350,12 +353,15 @@ export class CreateItinerary {
 
         if (parsed.retryCount <= 3) {
           this.createItineraryService.createItinerary(parsed.itinerary).subscribe({
-            next: (response) => {
+            next: (response: CreateItineraryResponse) => {
               console.log('Retry successful:', response);
               Swal.fire({
                 title: 'Lịch trình đã được tạo thành công sau khi thử lại!',
                 icon: 'success',
                 timer: 1500
+              }).then(() => {
+                // Chuyển hướng đến màn hình itinerary-view với scheduleId
+                this.router.navigate(['/itineraries', response.scheduleId]);
               });
               this.clearTemporaryData();
             },

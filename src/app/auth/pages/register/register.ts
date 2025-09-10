@@ -71,7 +71,7 @@ export class Register {
     this.authService.register(registerData).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
-        // localStorage.setItem('email', this.formData.email);
+        localStorage.setItem('email', this.formData.email);
         this.isLoading = false;
         Swal.fire({ title: 'Đăng ký thành công! Vui lòng nhập OTP.', icon: 'success', timer: 1500 });
         this.router.navigate(['/auth/otp']);

@@ -4,6 +4,7 @@ import { Post as CardPost, PostCardComponent } from '../../components/post-card'
 import { SocialService, Post as ServicePost, Post } from '../../social.service';
 import { FormsModule } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 type Privacy = 'public' | 'friends' | 'private';
 
@@ -15,7 +16,7 @@ type Privacy = 'public' | 'friends' | 'private';
   styleUrls: ['./social.css']
 })
 export class Social implements OnInit, OnDestroy {
-  constructor(private socialService: SocialService) {}
+  constructor(private socialService: SocialService) { }
 
   posts: CardPost[] = [];
 
@@ -28,10 +29,10 @@ export class Social implements OnInit, OnDestroy {
   newPost = { title: '', content: '', postImg: '' };
 
   currentUser = { name: 'Minh Anh', avatarUrl: 'assets/images/avatar.jpg' };
-  composerAvatars = ['/assets/images/avatar.jpg','/assets/images/avatar2.jpg','/assets/images/avatar3.jpg'];
+  composerAvatars = ['/assets/images/avatar.jpg', '/assets/images/avatar2.jpg', '/assets/images/avatar3.jpg'];
 
   isComposerOpen = false;
-  openComposer()  { this.isComposerOpen = true; }
+  openComposer() { this.isComposerOpen = true; }
   closeComposer() { this.isComposerOpen = false; }
 
   @HostListener('document:keydown.escape') onEsc() { this.closeComposer(); }
@@ -81,52 +82,52 @@ export class Social implements OnInit, OnDestroy {
   //   };
   // }
   private mapServicePostToCardPost(p: ServicePost): CardPost {
-  // 1) Nếu backend đã trả images[]
-  let photoList: string[] | undefined = (p as any).images;
+    // 1) Nếu backend đã trả images[]
+    let photoList: string[] | undefined = (p as any).images;
 
-  // 2) Nếu chưa có, thử decode từ postImg:
-  if (!photoList || photoList.length === 0) {
-    const raw = p.postImg?.trim();
+    // 2) Nếu chưa có, thử decode từ postImg:
+    if (!photoList || photoList.length === 0) {
+      const raw = p.postImg?.trim();
 
-    if (raw?.startsWith('[')) {
-      // JSON array string
-      try {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) {
-          photoList = arr.filter(Boolean);
-        }
-      } catch {}
-    } else if (raw?.includes('|')) {
-      // Delimiter '|'
-      photoList = raw.split('|').map(s => s.trim()).filter(Boolean);
-    } else if (raw) {
-      // 1 ảnh đơn
-      photoList = [raw];
-    } else {
-      photoList = [];
+      if (raw?.startsWith('[')) {
+        // JSON array string
+        try {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            photoList = arr.filter(Boolean);
+          }
+        } catch { }
+      } else if (raw?.includes('|')) {
+        // Delimiter '|'
+        photoList = raw.split('|').map(s => s.trim()).filter(Boolean);
+      } else if (raw) {
+        // 1 ảnh đơn
+        photoList = [raw];
+      } else {
+        photoList = [];
+      }
     }
-  }
 
-  return {
-    id: p.id,
-    author: {
-      name: p.authorName || 'Ẩn danh',
-      avatarUrl: '/assets/images/avatar.jpg',
-      verified: true
-    },
-    timeAgo: this.formatTimeAgo(p.createdAt),
-    title: p.title,
-    content: p.content,
-    rating: 0,
-    reviewCount: 0,
-    tags: [],
-    photos: photoList,
-    trip: { title: p.title || 'Chia sẻ hành trình', meta: '' },
-    stats: {  likes: (p as any).likeCount ?? 0, comments: 0, shares: 0, saves: 0 },
-    liked: false,
-    saved: false
-  };
-}
+    return {
+      id: p.id,
+      author: {
+        name: p.authorName || 'Ẩn danh',
+        avatarUrl: '/assets/images/avatar.jpg',
+        verified: true
+      },
+      timeAgo: this.formatTimeAgo(p.createdAt),
+      title: p.title,
+      content: p.content,
+      rating: 0,
+      reviewCount: 0,
+      tags: [],
+      photos: photoList,
+      trip: { title: p.title || 'Chia sẻ hành trình', meta: '' },
+      stats: { likes: (p as any).likeCount ?? 0, comments: 0, shares: 0, saves: 0 },
+      liked: false,
+      saved: false
+    };
+  }
 
 
   private formatTimeAgo(date: Date | string): string {
@@ -223,17 +224,17 @@ export class Social implements OnInit, OnDestroy {
       // const manualUrl = this.newPost.postImg?.trim();
       // const postImg = manualUrl || uploadedUrls[0] || '';
       // Gom tất cả URL: ưu tiên URL nhập tay đứng đầu
-    const manual = this.newPost.postImg?.trim();
-    const allUrls = [
-      ...(manual ? [manual] : []),
-      ...uploadedUrls
-    ].filter(Boolean);
+      const manual = this.newPost.postImg?.trim();
+      const allUrls = [
+        ...(manual ? [manual] : []),
+        ...uploadedUrls
+      ].filter(Boolean);
 
-    // CHỌN 1 TRONG 2 CÁCH ENCODE (mình khuyến nghị JSON):
-    // Cách A (khuyến nghị): JSON array string
-    const postImgPayload = JSON.stringify(allUrls);
-    // Cách B: chuỗi có delimiter '|'
-    // const postImgPayload = allUrls.join('|');
+      // CHỌN 1 TRONG 2 CÁCH ENCODE (mình khuyến nghị JSON):
+      // Cách A (khuyến nghị): JSON array string
+      const postImgPayload = JSON.stringify(allUrls);
+      // Cách B: chuỗi có delimiter '|'
+      // const postImgPayload = allUrls.join('|');
 
       // 3) Tạo post (backend hiện nhận 1 ảnh duy nhất 'postImg')
       const created = await firstValueFrom(
@@ -251,15 +252,15 @@ export class Social implements OnInit, OnDestroy {
       // this.selectedFiles = [];
 
       this.closeComposer();
-   
-      setTimeout(() => alert('Đăng bài thành công!'), 0);
+
+      setTimeout(() => Swal.fire({ title: 'Đăng bài thành công!', icon: 'success', timer: 1500 }), 0);
     } catch (err) {
       console.error('Create post failed:', err);
-      alert('Đăng bài thất bại. Vui lòng thử lại!');
+      Swal.fire({ title: 'Đăng bài thất bại. Vui lòng thử lại!', icon: 'error', timer: 1500 });
     } finally {
       this.isSubmitting = false;
     }
 
-   
+
   }
 }
